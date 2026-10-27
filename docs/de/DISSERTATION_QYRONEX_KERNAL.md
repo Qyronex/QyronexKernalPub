@@ -1,6 +1,6 @@
 # Entwurf und Evaluation einer Capability-orientierten Hybridkernel-Architektur mit Linux-Userspace-Kompatibilität
 
-## Dissertationsartige technische Projektarbeit zu Qyronex Kernal
+## technische Projektarbeit zu Qyronex Kernal
 
 **Autor und Entwickler des untersuchten Systems:** Moritz Wallinger  
 **Projekt:** Qyronex Kernal  
