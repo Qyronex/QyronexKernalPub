@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: LicenseRef-Qyronex-Kernal-NC-1.0
 
-mod step28;
-mod step29_final_fs_qemu;
-mod step30_final_qemu;
+mod qemu;
 
 use kernal_tsc_x86_64::QEMU_PROOF_TSC_HZ;
 use std::collections::BTreeMap;
@@ -120,9 +118,7 @@ fn run() -> Result<(), String> {
     match command.as_str() {
         "arm-build" => build_aarch64(false),
         "arm-qemu" => {
-            step28::run()?;
-            step29_final_fs_qemu::run()?;
-            step30_final_qemu::run()
+            qemu::run()
         }
         "build" => build(false),
         "doctor" => doctor(),
@@ -166,7 +162,7 @@ fn print_help() {
     println!("  cargo xtask qemu-smp    - boot the x86 proof with 2 and 4 vCPUs");
     println!("  cargo xtask arm-build   - build the freestanding AArch64 bring-up core");
     println!(
-        "  cargo xtask arm-qemu    - run accepted Step-28/29 regressions, then the final Step-30 process-runtime QEMU oracle"
+        "  cargo xtask arm-qemu    - run AArch64 filesystem and process-runtime QEMU acceptance tests"
     );
     println!(
         "  cargo xtask test        - run host tests and x86 QEMU proofs with 1, 2 and 4 vCPUs"
