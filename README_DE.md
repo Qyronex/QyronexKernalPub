@@ -8,7 +8,7 @@ Ziel ist ein kleiner privilegierter Kern mit expliziter Capability-basierter Rec
 
 > **Status:** aktive Forschung und Entwicklung. Kernal ist nicht produktionsreif und darf derzeit nicht als produktive Sicherheitsgrenze eingesetzt werden.
 
-![Qyronex-Kernal-Architektur](docs/assets/kernal-vs-linux-architecture.webp)
+![Qyronex-Kernal-Architektur](docs/assets/Architecture_comparison_diagram_…_38c24449_2K.jpg)
 
 ## Ziele
 
