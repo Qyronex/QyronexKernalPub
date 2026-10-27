@@ -8,7 +8,7 @@ The project explores a small privileged core, explicit capability-based authorit
 
 > **Development status:** active research and development. Kernal is not production-ready and must not yet be used as a production security boundary.
 
-![Qyronex Kernal architecture](docs/assets/kernal-vs-linux-architecture.webp)
+![Qyronex Kernal architecture](docs/assets/Architecture_comparison_diagram_…_38c24449_2K.jpg)
 
 ## Core goals
 
