@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "purpose": "Current read-first pointer map for every agent joining the Debian ARM64 QEMU preparation/integration path.",
+  "read_order": [
+    "QEMU_BOOT_PREP_INDEX.md",
+    "docs/debian13/qemu-prep/PREP_STATUS.json",
+    "docs/debian13/qemu-prep/PREP_COMPLETION_MATRIX.json",
+    "docs/debian13/qemu-prep/LEGACY_QEMU_BLOCKER_MAP.json",
+    "docs/debian13/qemu-prep/PREP_WORK_QUEUE.json",
+    "docs/debian13/qemu-prep/REFERENCE_EXECUTION_QUEUE.json",
+    "docs/debian13/qemu-prep/REFERENCE_EXECUTION_QUEUE_SUPPLEMENT.json",
+    "docs/debian13/qemu-prep/ARTIFACT_CATALOG.json",
+    "docs/debian13/qemu-prep/ARTIFACT_CATALOG_SUPPLEMENT.json",
+    "docs/debian13/qemu-prep/00_CURRENT_EXECUTABLE_PREP.md",
+    "docs/debian13/qemu-prep/INTEGRATION_LANDING_MAP.md",
+    "docs/debian13/qemu-prep/ORACLE_RUNNER_HANDOFF.md"
+  ],
+  "current_authoritative_choices": {
+    "runtime_sequence": "30 -> 31 -> 32 -> 33 -> 34 -> 35 -> 36 -> 37 -> 38 -> 39 -> 40",
+    "runtime_32_40": "HOLD",
+    "architecture": "AArch64 only",
+    "first_product_platform": "AArch64 QEMU",
+    "first_product_userspace": "pinned unchanged Debian 13 ARM64 Server",
+    "preferred_block_transport": "FDT-discovered VirtIO-MMIO via virtio-blk-device, subject to runtime proof",
+    "preferred_network_transport": "FDT-discovered VirtIO-MMIO via virtio-net-device, subject to runtime proof",
+    "fallback_transport": "VirtIO PCI only after explicit PCIe/IRQ/DMA lane release",
+    "pinned_root_policy": "never write canonical base; verified qcow2 COW overlay only",
+    "network_backend": "QEMU user networking",
+    "guest_visible_host": "10.0.2.2",
+    "guest_visible_dns": "10.0.2.3",
+    "guest_to_host_tcp": "10.0.2.2:18081",
+    "guest_to_host_udp": "10.0.2.2:18082",
+    "host_to_guest_tcp": "127.0.0.1:18080 -> guest:8080",
+    "step36_reference_collector": "tools/qemu-prep/step36/collect_systemd_feature_reference_strict.sh",
+    "step40_completed_evidence_validator": "tools/qemu-prep/step40/validate_final_evidence_bundle.py"
+  },
+  "do_not_use_as_authoritative": [
+    "tools/qemu-prep/step36/collect_systemd_feature_reference.sh for new runs; use the _strict.sh collector",
+    "tools/qemu-prep/step40/validate_final_evidence.py; use validate_final_evidence_bundle.py"
+  ],
+  "one_command_host_prep_check": "python3 tools/qemu-prep/validate_all.py",
+  "validation_execution_state": "STAGED_NOT_RUN_IN_CURRENT_CHAT_CONTAINER",
+  "validation_reason": "private repository branch is not mounted/resolvable in the current container; run on an actual checkout or approved Mac runner before claiming green",
+  "merge_state_rule": "PR #1179 remains draft until governance is reviewed and host PREP checks have actual evidence",
+  "runtime_rule": "PREP readiness never authorizes production kernel writes. Consult current main AGENT_TASKS.md before any runtime integration."
+}

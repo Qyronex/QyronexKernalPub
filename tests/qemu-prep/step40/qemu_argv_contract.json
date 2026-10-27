@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "step": 40,
+  "profile_id": "kernal-debian13-arm64-qemu-fastpath-v1",
+  "status": "TEMPLATE_RUNTIME_PROOF_REQUIRED",
+  "required_placeholders": ["<QEMU_SYSTEM_AARCH64>", "<KERNAL_IMAGE>", "<ROOT_OVERLAY>", "<SMP>"],
+  "base_argv": [
+    "<QEMU_SYSTEM_AARCH64>",
+    "-machine", "virt,gic-version=3",
+    "-cpu", "max",
+    "-m", "512M",
+    "-smp", "<SMP>",
+    "-kernel", "<KERNAL_IMAGE>",
+    "-display", "none",
+    "-monitor", "none",
+    "-serial", "stdio",
+    "-no-reboot"
+  ],
+  "preferred_block_argv": [
+    "-drive", "if=none,id=root,file=<ROOT_OVERLAY>,format=qcow2,cache=none",
+    "-device", "virtio-blk-device,drive=root"
+  ],
+  "preferred_network_argv": [
+    "-netdev", "user,id=net0,hostfwd=tcp:127.0.0.1:18080-:8080",
+    "-device", "virtio-net-device,netdev=net0"
+  ],
+  "fallback_block_argv": [
+    "-drive", "if=none,id=root,file=<ROOT_OVERLAY>,format=qcow2,cache=none",
+    "-device", "virtio-blk-pci,drive=root"
+  ],
+  "fallback_network_argv": [
+    "-netdev", "user,id=net0,hostfwd=tcp:127.0.0.1:18080-:8080",
+    "-device", "virtio-net-pci,netdev=net0"
+  ],
+  "optional_runtime_argv": {
+    "initrd": ["-initrd", "<INITRD>"],
+    "kernel_command_line": ["-append", "<KERNEL_CMDLINE>"],
+    "machine_debug": ["-d", "<QEMU_DEBUG_FLAGS>"]
+  },
+  "rules": [
+    "Record the complete expanded argv and QEMU version in every Step-40 evidence bundle.",
+    "Preferred VirtIO-MMIO transport becomes accepted only after Step-33/34 runtime proof; otherwise use the explicit PCI fallback.",
+    "ROOT_OVERLAY must be created from the verified pinned Debian base; never boot Step-40 acceptance with writes directed to the pinned base image.",
+    "SMP must include the accepted final matrix selected by the Step-40 integrator; at minimum preserve the existing 1/2/4-vCPU regression coverage where practical.",
+    "Do not silently add unrelated devices to make Debian boot; each added device becomes part of the documented product profile and owner matrix."
+  ]
+}

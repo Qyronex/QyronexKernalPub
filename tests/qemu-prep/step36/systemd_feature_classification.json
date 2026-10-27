@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "step": 36,
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "purpose": "Classify systemd-facing isolation/resource/security contracts before runtime implementation instead of implementing broad Linux feature parity by guesswork.",
+  "existing_observations": [
+    {"feature": "cgroup_path", "value": "/sys/fs/cgroup/", "source": "component.systemd.version"},
+    {"feature": "capability_probe", "value": "/proc/sys/kernel/cap_last_cap", "source": "component.systemd.version"},
+    {"feature": "rlimit", "value": "prlimit64", "source": "multiple dynamic reference cases"},
+    {"feature": "prctl", "value": "prctl", "source": "systemd/udev/dbus/iproute2 reference cases"},
+    {"feature": "security_fs_probe", "value": ["/sys/fs/selinux", "/sys/fs/smackfs/"], "source": "component.systemd.version"}
+  ],
+  "classifications": [
+    {
+      "id": "cgroup2.base",
+      "state": "REFERENCE_TRACE_REQUIRED",
+      "question": "Which cgroup v2 files/controllers are mandatory for the selected Step-37 server target?",
+      "must_prove": ["hierarchy membership", "service lifecycle", "selected CPU/memory/pids accounting/enforcement"]
+    },
+    {
+      "id": "rlimit.enforcement",
+      "state": "REFERENCE_OBSERVED",
+      "must_prove": ["prlimit64 query/set subset", "enforcement at canonical resource allocation owners", "no report-only fake limits"]
+    },
+    {
+      "id": "namespace.minimum",
+      "state": "REFERENCE_TRACE_REQUIRED",
+      "question": "Which namespace domains are mandatory for the pinned systemd configuration?",
+      "rule": "Do not implement a namespace type merely because Linux has it; add only target-proven domains."
+    },
+    {
+      "id": "linux-capabilities-view",
+      "state": "REFERENCE_OBSERVED",
+      "must_prove": ["uid/gid/capability/securebits Linux-visible behavior", "Linux capability bits never grant Kernal object capabilities"]
+    },
+    {
+      "id": "seccomp",
+      "state": "OPTIONAL_UNTIL_PROVEN",
+      "fallback": "explicit Linux-compatible failure or reference-observed systemd fallback"
+    },
+    {
+      "id": "keyring",
+      "state": "OPTIONAL_UNTIL_PROVEN",
+      "fallback": "explicit Linux-compatible failure"
+    },
+    {
+      "id": "audit",
+      "state": "OPTIONAL_UNTIL_PROVEN",
+      "fallback": "explicit Linux-compatible failure"
+    },
+    {
+      "id": "bpf",
+      "state": "OPTIONAL_UNTIL_PROVEN",
+      "fallback": "explicit Linux-compatible failure"
+    },
+    {
+      "id": "selinux-smack-apparmor-probes",
+      "state": "FEATURE_DETECTION_ONLY_UNTIL_PROVEN",
+      "rule": "Filesystem/probe visibility must not silently imply an enabled security module."
+    }
+  ],
+  "negative_invariants": [
+    "stale Process/cgroup/namespace generations fail closed",
+    "unsupported security APIs cannot broaden authority",
+    "no duplicate Process/scheduler/VFS/mount/network owner",
+    "cgroup membership teardown leaves no stale accounting or control authority"
+  ]
+}

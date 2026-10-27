@@ -1,0 +1,30 @@
+{
+  "schema_version": 2,
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "busybox_manifest": "tests/step28/busybox-static-arm64.json",
+  "busybox_path": "bin/busybox",
+  "regression_argv0": "date",
+  "directory_argv0": "ls",
+  "fixture_path": "etc/localtime",
+  "fixture_target_path": "usr/share/zoneinfo/UTC",
+  "fixture_symlink_target": "../usr/share/zoneinfo/UTC",
+  "directory_symlink_path": "proof-link",
+  "directory_symlink_target": "etc",
+  "fixture_format": "TZif-v1-UTC",
+  "fixture_size_bytes": 54,
+  "fixture_sha256": "fa6b1c0d5279a53bc0a9b565bc322c541c1bbf223d90db518ea634512342b3ab",
+  "qemu_guest_address": "0x48000000",
+  "required_regression_semantics": [
+    "openat-readonly",
+    "symlink-follow",
+    "positive-read",
+    "fstat-or-newfstatat",
+    "close"
+  ],
+  "required_directory_semantics": [
+    "open-directory",
+    "getdents64-positive",
+    "symlink-dirent",
+    "close"
+  ]
+}

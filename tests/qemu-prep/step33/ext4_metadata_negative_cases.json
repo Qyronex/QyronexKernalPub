@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "step": 33,
+  "fixture": "ext4-metadata-negative-v1",
+  "enabled_when": {
+    "classifier": "tools/qemu-prep/step33/classify_rootfs_reference.py",
+    "field": "filesystem_decision",
+    "equals": "EXT4_REFERENCE_CONFIRMED"
+  },
+  "source_policy": {
+    "reference_base_is_immutable": true,
+    "mutate_disposable_copy_only": true,
+    "never_run_mutating_fsck_on_reference": true,
+    "record_input_and_mutated_sha256": true
+  },
+  "security_expectation": "Malformed metadata must never produce an unchecked writable mount, out-of-device access, authority widening, or silent-success durability claim.",
+  "cases": [
+    {
+      "id": "truncated-primary-superblock",
+      "mutation": {"kind": "truncate_metadata_region", "target": "primary_superblock"},
+      "expected": "fail_closed"
+    },
+    {
+      "id": "bad-superblock-magic",
+      "mutation": {"kind": "replace_field", "field": "s_magic", "value": "not_EXT4_SUPER_MAGIC"},
+      "expected": "reject_filesystem_identity"
+    },
+    {
+      "id": "block-size-out-of-supported-range",
+      "mutation": {"kind": "replace_field", "field": "s_log_block_size", "value": "declared_range_overflow"},
+      "expected": "reject_before_block_addressing"
+    },
+    {
+      "id": "blocks-count-beyond-device",
+      "mutation": {"kind": "replace_field", "field": "blocks_count", "value": "larger_than_backing_device"},
+      "expected": "reject_before_out_of_device_io"
+    },
+    {
+      "id": "unknown-required-incompat-feature",
+      "mutation": {"kind": "set_unknown_required_bit", "field": "s_feature_incompat"},
+      "expected": "reject_unsupported_required_feature"
+    },
+    {
+      "id": "inode-table-outside-group",
+      "mutation": {"kind": "replace_group_descriptor_field", "field": "bg_inode_table", "value": "outside_valid_device_range"},
+      "expected": "reject_before_inode_table_io"
+    },
+    {
+      "id": "metadata-checksum-mismatch",
+      "mutation": {"kind": "corrupt_checksum_protected_metadata", "condition": "metadata_csum_feature_present"},
+      "expected": "detect_integrity_failure_without_silent_writable_success"
+    }
+  ],
+  "evidence_fields": [
+    "tested_commit",
+    "reference_classifier_sha256",
+    "input_sha256",
+    "mutated_sha256",
+    "case_id",
+    "mount_or_parser_result",
+    "errno_or_failure_class",
+    "kernel_log_hash",
+    "out_of_bounds_io_count"
+  ]
+}

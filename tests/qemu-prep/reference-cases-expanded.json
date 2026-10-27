@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "purpose": "Staged deeper read-mostly/reference-safe cases for the existing canonical Debian collector. This file is not used by the canonical runner until an oracle lane explicitly wires --cases to it.",
+  "cases": [
+    {"id":"component.busybox.help","component":"busybox","argv":["/usr/bin/busybox","--help"]},
+    {"id":"functional.busybox.proc-status","component":"busybox","argv":["/usr/bin/busybox","test","-r","/proc/self/status"]},
+    {"id":"functional.busybox.proc-filesystems","component":"busybox","argv":["/usr/bin/busybox","cat","/proc/filesystems"]},
+    {"id":"functional.busybox.proc-cap-last-cap","component":"busybox","argv":["/usr/bin/busybox","cat","/proc/sys/kernel/cap_last_cap"]},
+    {"id":"functional.busybox.sys-root","component":"busybox","argv":["/usr/bin/busybox","test","-d","/sys"]},
+    {"id":"functional.busybox.cgroup-root","component":"busybox","argv":["/usr/bin/busybox","test","-d","/sys/fs/cgroup"]},
+    {"id":"functional.busybox.dev-null","component":"busybox","argv":["/usr/bin/busybox","test","-e","/dev/null"]},
+    {"id":"functional.busybox.dev-console","component":"busybox","argv":["/usr/bin/busybox","test","-e","/dev/console"]},
+    {"id":"functional.busybox.filesystem-path","component":"busybox","argv":["/usr/bin/busybox","test","-r","/etc/os-release"]},
+    {"id":"functional.busybox.tty-ioctl","component":"busybox","argv":["/usr/bin/busybox","stty","-a"]},
+    {"id":"functional.busybox.tmp-fs-mutation","component":"busybox","argv":["/usr/bin/busybox","sh","-c","d=/tmp/kernal-oracle-fs; rm -rf $d; mkdir $d; printf x >$d/a; mv $d/a $d/b; cat $d/b; rm -rf $d"]},
+
+    {"id":"component.glibc-loader.help","component":"glibc-loader","argv":["/lib/ld-linux-aarch64.so.1","--help"]},
+    {"id":"functional.glibc-loader.list-shell","component":"glibc-loader","argv":["/lib/ld-linux-aarch64.so.1","--list","/bin/sh"]},
+
+    {"id":"component.bin-sh.printf","component":"bin-sh","argv":["/bin/sh","-c","printf 'kernal-debian13-oracle-shell\\n'"]},
+    {"id":"functional.bin-sh.process","component":"bin-sh","argv":["/bin/sh","-c","(exit 7); test $? -eq 7 && printf 'process-ok\\n'"]},
+    {"id":"functional.bin-sh.file-ops","component":"bin-sh","argv":["/bin/sh","-c","d=/tmp/kernal-shell-fs; rm -rf \"$d\"; mkdir \"$d\"; printf abc >\"$d/a\"; mv \"$d/a\" \"$d/b\"; test \"$(cat \"$d/b\")\" = abc; rm -rf \"$d\""]},
+
+    {"id":"component.systemd.version","component":"systemd","argv":["/usr/lib/systemd/systemd","--version"]},
+    {"id":"component.udev.version","component":"udev","argv":["/usr/lib/systemd/systemd-udevd","--version"]},
+    {"id":"component.dbus.version","component":"dbus","argv":["/usr/bin/dbus-daemon","--version"]},
+
+    {"id":"component.iproute2.version","component":"iproute2","argv":["/usr/sbin/ip","-Version"]},
+    {"id":"functional.iproute2.link-loopback","component":"iproute2","argv":["/usr/sbin/ip","link","show","lo"]},
+    {"id":"functional.iproute2.addr-loopback","component":"iproute2","argv":["/usr/sbin/ip","addr","show","dev","lo"]},
+    {"id":"functional.iproute2.route","component":"iproute2","argv":["/usr/sbin/ip","route","show"]},
+
+    {"id":"component.dpkg.version","component":"dpkg","argv":["/usr/bin/dpkg","--version"]},
+    {"id":"functional.dpkg.audit","component":"dpkg","argv":["/usr/bin/dpkg","--audit"]},
+
+    {"id":"component.apt.version","component":"apt","argv":["/usr/bin/apt-get","--version"]},
+    {"id":"functional.apt.indextargets","component":"apt","argv":["/usr/bin/apt-get","indextargets","--format","$(IDENTIFIER) $(SITE) $(RELEASE) $(ARCHITECTURE)"]}
+  ],
+  "excluded_from_this_manifest": [
+    "apt-get update/install/remove: requires an explicitly persistent snapshot-only source configuration and a disposable transaction overlay",
+    "systemd PID1 boot: requires full boot tracing, not a child process under the generic collector",
+    "udev daemon enumeration: requires normal service/device lifecycle context",
+    "custom epoll/eventfd/timerfd/signalfd programs: staged separately because they are not existing compatibility-matrix component executables"
+  ]
+}

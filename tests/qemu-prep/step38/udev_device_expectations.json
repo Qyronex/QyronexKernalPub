@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "step": 38,
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "purpose": "Freeze the minimum normal Linux-visible device model for unchanged systemd-udevd on the selected QEMU profile.",
+  "selected_device_classes": [
+    {
+      "id": "console",
+      "source_owner": "Step-32 TTY/PL011 adapter",
+      "required_visibility": ["device identity projected in sysfs as required by oracle", "usable /dev/console node", "no extra authority from node existence"]
+    },
+    {
+      "id": "root-block",
+      "source_owner": "Step-33 canonical block/VirtIO transport owner",
+      "required_visibility": ["stable generation-safe device identity", "sysfs block projection required by udev", "normal device node for selected root/block path"]
+    },
+    {
+      "id": "network",
+      "source_owner": "Step-34 canonical NIC/packet-network owner",
+      "required_visibility": ["stable interface/device identity", "sysfs projection required by udev/iproute2", "no shadow NIC registry"]
+    }
+  ],
+  "reference_cases": [
+    {
+      "id": "udev.daemon-start",
+      "operation": "start unchanged Debian systemd-udevd under normal systemd service path",
+      "capture": ["exit/lifecycle", "sysfs paths", "uevent sockets/messages", "device node operations"],
+      "required": true
+    },
+    {
+      "id": "udev.enumerate-selected-set",
+      "operation": "enumerate console + selected VirtIO block + selected VirtIO NIC through ordinary udev path",
+      "capture": ["DEVPATH", "SUBSYSTEM", "ACTION", "DEVNAME if applicable", "stable identity fields actually observed"],
+      "required": true
+    },
+    {
+      "id": "udev.remove-readd",
+      "operation": "where QEMU/runtime profile supports controlled remove/re-add, verify generation-safe teardown/reprobe",
+      "capture": ["remove uevent", "stale FD/IRQ/DMA behavior", "new generation identity"],
+      "required": false,
+      "classification": "mandatory only for devices/profile where safe hotplug is selected for Step 38"
+    },
+    {
+      "id": "udev.malformed-uevent",
+      "operation": "malformed/bounded uevent projection input",
+      "expected_class": "bounded failure/no kernel panic/no authority amplification",
+      "required": true
+    }
+  ],
+  "projection_rules": [
+    "sysfs device facts come from canonical hardware/driver owners",
+    "no udev-specific shadow device registry",
+    "one bounded uevent delivery path",
+    "device node creation/lookup never grants authority beyond canonical owner",
+    "device removal revokes stale IRQ/DMA/FD/device generation authority before reuse"
+  ]
+}

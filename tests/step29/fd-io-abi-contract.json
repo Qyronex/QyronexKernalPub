@@ -1,0 +1,210 @@
+{
+  "schema_version": 1,
+  "architecture": "aarch64",
+  "active_step": 29,
+  "purpose": "Frozen scalar ABI and negative-semantics contract for Step-29 FD I/O, duplication, fcntl, and pipe integration.",
+  "scope": {
+    "classifier_is_authority_free": true,
+    "classifier_preserves_raw_register_bits": true,
+    "accepted_path_classifier_surface_remains_unchanged": true,
+    "fd_io_classifier_is_separate_from_path_classifier": true,
+    "no_usercopy": true,
+    "no_fd_lookup": true,
+    "no_pipe_owner_state": true,
+    "no_signal_semantics": true,
+    "no_step30_or_step31_expansion": true
+  },
+  "arm64_syscalls": {
+    "dup": { "number": 23, "args": ["oldfd"] },
+    "dup3": { "number": 24, "args": ["oldfd", "newfd", "flags"] },
+    "fcntl": { "number": 25, "args": ["fd", "cmd", "arg"] },
+    "pipe2": { "number": 59, "args": ["user_pipefd", "flags"] },
+    "lseek": { "number": 62, "args": ["fd", "offset", "whence"] },
+    "pread64": { "number": 67, "args": ["fd", "user_buffer", "count", "offset"] }
+  },
+  "declared_width_policy": {
+    "classifier": "Preserve all x0..x5 values as raw u64 register bits.",
+    "conversion_helpers": {
+      "linux_unsigned_int": "consume the low 32 bits as u32",
+      "linux_signed_int": "consume the low 32 bits then reinterpret as i32",
+      "linux_signed_off_t": "reinterpret the full 64-bit register as i64",
+      "linux_u64": "preserve the full u64 value for pointer, size_t and unsigned long arguments"
+    },
+    "unsigned_int_fields": [
+      "dup.oldfd",
+      "dup3.oldfd",
+      "dup3.newfd",
+      "fcntl.fd",
+      "fcntl.cmd",
+      "lseek.fd",
+      "lseek.whence",
+      "pread64.fd"
+    ],
+    "signed_int_fields": ["dup3.flags", "pipe2.flags"],
+    "unsigned_long_fields": ["fcntl.arg"],
+    "signed_64_fields": ["lseek.offset", "pread64.offset"],
+    "pointer_and_size_t_fields": ["pipe2.user_pipefd", "pread64.user_buffer", "pread64.count"],
+    "tests_must_cover_noncanonical_upper_register_bits": true
+  },
+  "constants": {
+    "seek": { "SEEK_SET": 0, "SEEK_CUR": 1, "SEEK_END": 2 },
+    "fcntl": {
+      "F_DUPFD": 0,
+      "F_GETFD": 1,
+      "F_SETFD": 2,
+      "F_GETFL": 3,
+      "F_DUPFD_CLOEXEC": 1030,
+      "FD_CLOEXEC": 1
+    },
+    "arm64_open_flags": {
+      "O_RDONLY": 0,
+      "O_WRONLY": 1,
+      "O_RDWR": 2,
+      "O_ACCMODE": 3,
+      "O_NONBLOCK": 2048,
+      "O_DIRECTORY": 16384,
+      "O_NOFOLLOW": 32768,
+      "O_LARGEFILE": 131072,
+      "O_CLOEXEC": 524288
+    },
+    "pipe2_supported_flags_for_step29": ["O_NONBLOCK", "O_CLOEXEC"]
+  },
+  "errno": {
+    "EBADF": 9,
+    "EAGAIN": 11,
+    "EFAULT": 14,
+    "EINVAL": 22,
+    "ENFILE": 23,
+    "EMFILE": 24,
+    "ESPIPE": 29,
+    "EPIPE": 32,
+    "EOVERFLOW": 75
+  },
+  "required_negative_semantics": [
+    { "case": "dup3_same_descriptor", "expect": "EINVAL" },
+    { "case": "dup3_unsupported_flags", "expect": "EINVAL" },
+    { "case": "pipe2_unsupported_flags", "expect": "EINVAL" },
+    { "case": "pipe2_global_pipe_table_exhausted", "expect": "ENFILE" },
+    { "case": "pipe2_process_fd_table_cannot_install_pair", "expect": "EMFILE" },
+    { "case": "fcntl_dupfd_negative_minimum", "expect": "EINVAL" },
+    { "case": "fcntl_dupfd_minimum_at_or_above_descriptor_limit", "expect": "EINVAL" },
+    { "case": "fcntl_dupfd_valid_minimum_no_free_descriptor", "expect": "EMFILE" },
+    { "case": "lseek_pipe_endpoint", "expect": "ESPIPE" },
+    { "case": "pread64_negative_offset", "expect": "EINVAL" },
+    { "case": "pipe_read_empty_with_live_writer_and_nonblock", "expect": "EAGAIN" },
+    { "case": "pipe_read_empty_without_writers", "expect": "EOF_ZERO" },
+    {
+      "case": "pipe_write_without_readers",
+      "expect": "EPIPE",
+      "note": "SIGPIPE delivery is not part of Step 29."
+    }
+  ],
+  "zero_length_io": [
+    {
+      "case": "valid_pipe_read_count_zero",
+      "expect": "ZERO",
+      "note": "after endpoint/descriptor validation, independent of writers, buffered data and O_NONBLOCK"
+    },
+    {
+      "case": "valid_pipe_write_count_zero",
+      "expect": "ZERO",
+      "note": "after endpoint/descriptor validation, independent of readers, free capacity and O_NONBLOCK"
+    }
+  ],
+  "error_precedence": [
+    {
+      "syscall": "dup3",
+      "combined_case": "unsupported_flags_and_any_fd_error",
+      "expect": "EINVAL",
+      "reason": "dup3 validates that only O_CLOEXEC is present before descriptor lookup"
+    },
+    {
+      "syscall": "dup3",
+      "combined_case": "oldfd_equals_newfd",
+      "expect": "EINVAL",
+      "reason": "dup3 rejects identical descriptors rather than behaving like dup2"
+    },
+    {
+      "syscall": "dup3",
+      "combined_case": "out_of_range_newfd_and_invalid_oldfd",
+      "expect": "EBADF",
+      "reason": "the exact target descriptor domain is validated before source-fd lookup"
+    },
+    {
+      "syscall": "dup3",
+      "combined_case": "valid_target_and_invalid_oldfd",
+      "expect": "EBADF",
+      "reason": "source-fd lookup follows flag, same-fd and target-range validation"
+    },
+    {
+      "syscall": "pread64",
+      "combined_case": "negative_offset_and_invalid_fd",
+      "expect": "EINVAL",
+      "reason": "negative position is rejected before fd resolution"
+    },
+    {
+      "syscall": "lseek",
+      "combined_case": "invalid_fd_and_invalid_whence",
+      "expect": "EBADF",
+      "reason": "fd resolution precedes whence validation"
+    },
+    {
+      "syscall": "fcntl_F_DUPFD_or_F_DUPFD_CLOEXEC",
+      "combined_case": "invalid_source_fd_and_invalid_minimum",
+      "expect": "EBADF",
+      "reason": "fcntl resolves the source fd before validating the duplication minimum"
+    }
+  ],
+  "fcntl_argument_semantics": {
+    "classifier_preserves_raw_arg_u64": true,
+    "post_command_argi_expression": "(i32)(u32)arg",
+    "commands_decoding_argi": ["F_DUPFD", "F_DUPFD_CLOEXEC", "F_SETFD"],
+    "commands_ignoring_arg": ["F_GETFD", "F_GETFL"],
+    "hostile_upper_arg_bits_do_not_change_argi": true,
+    "F_GETFD_return_domain": [0, 1],
+    "F_GETFD_returns_FD_CLOEXEC_when_set": true,
+    "F_SETFD_effective_bits_expression": "argi & FD_CLOEXEC",
+    "F_SETFD_ignores_unrelated_higher_arg_bits": true,
+    "F_GETFL_reads_shared_OFD_status": true,
+    "F_GETFL_must_not_include_FD_CLOEXEC": true,
+    "pipe_read_end_F_GETFL": "O_RDONLY | shared_O_NONBLOCK",
+    "pipe_write_end_F_GETFL": "O_WRONLY | shared_O_NONBLOCK",
+    "pipe_read_end_F_GETFL_and_O_ACCMODE": 0,
+    "pipe_write_end_F_GETFL_and_O_ACCMODE": 1
+  },
+  "descriptor_and_ofd_contract": {
+    "fd_0_1_2_are_legal_exact_targets": true,
+    "initial_process_seeds_stdin_stdout_stderr_at_0_1_2": true,
+    "first_ordinary_open_with_seeded_stdfds_is_3": true,
+    "generic_linux_open_chooses_lowest_free_fd_from_0": true,
+    "closing_a_standard_fd_makes_that_hole_reusable_by_open": true,
+    "FD_CLOEXEC_is_descriptor_local": true,
+    "O_NONBLOCK_is_shared_OFD_state": true,
+    "F_GETFL_must_not_report_O_CLOEXEC": true,
+    "dup_aliases_share_OFD_position": true,
+    "pread64_does_not_mutate_OFD_position": true,
+    "lseek_beyond_regular_file_EOF_is_valid": true,
+    "read_after_seek_beyond_EOF_returns_zero": true
+  },
+  "pipe_contract": {
+    "pipe2_creates_two_distinct_OFDs": true,
+    "both_OFDs_reference_one_pipe_object": true,
+    "read_and_write_endpoint_status_are_not_aliased": true,
+    "reader_writer_lifetime_is_counted_at_open_endpoint_OFD_boundary": true,
+    "pipe2_fd_pair_install_is_transactional": true,
+    "pipe2_failure_releases_new_pipe_and_endpoint_leases": true,
+    "pipe2_usercopy_failure_rolls_back_both_fds_and_new_pipe": true,
+    "current_prepared_pipe_chunk_commits_only_after_full_chunk_copy_succeeds": true,
+    "faulting_current_pipe_chunk_remains_unpublished": true,
+    "positive_short_syscall_progress_may_only_reflect_earlier_fully_completed_chunks": true,
+    "PIPE_BUF": 4096,
+    "write_at_or_below_PIPE_BUF_is_atomic_for_blocking_and_nonblocking": true,
+    "write_above_PIPE_BUF_may_return_positive_partial": true
+  },
+  "acceptance_constraints": {
+    "unchanged_userspace_only_for_QEMU_claims": true,
+    "no_busybox_name_special_case": true,
+    "single_argv_current_proof_loader_must_not_force_general_argv_support": true,
+    "multi_process_shell_pipeline_not_required_until_process_owner_step": true
+  }
+}

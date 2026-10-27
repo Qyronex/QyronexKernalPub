@@ -1,0 +1,37 @@
+{
+  "schema": "kernal-step-scientific-endpoint-v1",
+  "step": 33,
+  "state": "DESIGN_CONTRACT",
+  "research_question": "Can Kernal provide durable mounted storage and pseudo-filesystem semantics while preserving capability and protected-storage isolation?",
+  "claim_bindings": ["compat.debian13-arm64", "authority.capability-isolation", "storage.compartmented-encryption", "performance.kernel-runtime"],
+  "metrics": [
+    {"name":"filesystem_oracle_passed","type":"integer","unit":"cases"},
+    {"name":"filesystem_oracle_total","type":"integer","unit":"cases"},
+    {"name":"mount_transition_failures","type":"integer","unit":"cases"},
+    {"name":"fsync_durability_failures","type":"integer","unit":"cases"},
+    {"name":"injected_crash_recovery_failures","type":"integer","unit":"cases"},
+    {"name":"namespace_escape_successes","type":"integer","unit":"cases"},
+    {"name":"stale_handle_acceptances","type":"integer","unit":"cases"},
+    {"name":"sequential_throughput_mib_s","type":"number","unit":"MiB/s"},
+    {"name":"random_iops","type":"number","unit":"IOPS"},
+    {"name":"io_latency_p50_us","type":"number","unit":"microseconds"},
+    {"name":"io_latency_p95_us","type":"number","unit":"microseconds"},
+    {"name":"io_latency_p99_us","type":"number","unit":"microseconds"},
+    {"name":"crypto_overhead_percent","type":"number","unit":"percent","condition":"record when protected secure-storage path is active"},
+    {"name":"compartment_isolation_failures","type":"integer","unit":"cases","condition":"import from canonical secure-storage evidence when active"},
+    {"name":"integrity_detections","type":"integer","unit":"cases","condition":"import from canonical secure-storage evidence when active"},
+    {"name":"wrong_key_rejections","type":"integer","unit":"cases","condition":"import from canonical secure-storage evidence when active"}
+  ],
+  "negative_controls": [
+    "namespace escape attempts must fail",
+    "stale file/volume handles must fail generation revalidation",
+    "selected crash points must never produce silent unauthenticated recovery",
+    "persistent-volume encryption evidence must not be described as per-address-space RAM encryption"
+  ],
+  "hard_zero_metrics": ["namespace_escape_successes", "stale_handle_acceptances", "compartment_isolation_failures"],
+  "environment_fields": ["tested_commit", "architecture", "debian_target_id", "qemu_version", "qemu_profile_id", "toolchain", "fixture_hashes", "filesystem_profile", "storage_transport", "iommu_mode"],
+  "baseline": {"kind":"pinned-debian13-arm64-linux", "required_for":["sequential_throughput_mib_s", "random_iops", "io_latency_p50_us", "io_latency_p95_us", "io_latency_p99_us", "crypto_overhead_percent"]},
+  "repetition_policy": {"minimum_runs":30, "timing_metrics":"report distribution, variance, block size and queue depth"},
+  "promotion_rule": {"to_measured":"exact-SHA executed evidence must cover VFS/durability negatives and any active secure-storage metrics; hard-zero metrics must be zero", "to_replicated":"independent reproduction of the pinned rootfs/storage profile is required"},
+  "raw_evidence_contract": {"format":"json", "path_template":"research/runtime/step33/<tested_commit>.json", "required_fields":["tested_commit", "environment", "metrics", "negative_controls", "raw_artifact_hash"]}
+}

@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "cases": [
+    {
+      "id": "component.busybox.help",
+      "component": "busybox",
+      "argv": ["/usr/bin/busybox", "--help"]
+    },
+    {
+      "id": "functional.busybox.proc-status",
+      "component": "busybox",
+      "argv": ["/usr/bin/busybox", "test", "-r", "/proc/self/status"]
+    },
+    {
+      "id": "functional.busybox.sys-root",
+      "component": "busybox",
+      "argv": ["/usr/bin/busybox", "test", "-d", "/sys"]
+    },
+    {
+      "id": "functional.busybox.dev-null",
+      "component": "busybox",
+      "argv": ["/usr/bin/busybox", "test", "-e", "/dev/null"]
+    },
+    {
+      "id": "functional.busybox.filesystem-path",
+      "component": "busybox",
+      "argv": ["/usr/bin/busybox", "test", "-r", "/etc/os-release"]
+    },
+    {
+      "id": "functional.busybox.tty-ioctl",
+      "component": "busybox",
+      "argv": ["/usr/bin/busybox", "stty", "-a"]
+    },
+    {
+      "id": "component.glibc-loader.help",
+      "component": "glibc-loader",
+      "argv": ["/lib/ld-linux-aarch64.so.1", "--help"]
+    },
+    {
+      "id": "component.bin-sh.printf",
+      "component": "bin-sh",
+      "argv": ["/bin/sh", "-c", "printf 'kernal-debian13-oracle-shell\\n'"]
+    },
+    {
+      "id": "component.systemd.version",
+      "component": "systemd",
+      "argv": ["/usr/lib/systemd/systemd", "--version"]
+    },
+    {
+      "id": "component.udev.version",
+      "component": "udev",
+      "argv": ["/usr/lib/systemd/systemd-udevd", "--version"]
+    },
+    {
+      "id": "component.dbus.version",
+      "component": "dbus",
+      "argv": ["/usr/bin/dbus-daemon", "--version"]
+    },
+    {
+      "id": "component.iproute2.version",
+      "component": "iproute2",
+      "argv": ["/usr/sbin/ip", "-Version"]
+    },
+    {
+      "id": "functional.iproute2.link-loopback",
+      "component": "iproute2",
+      "argv": ["/usr/sbin/ip", "link", "show", "lo"]
+    },
+    {
+      "id": "component.dpkg.version",
+      "component": "dpkg",
+      "argv": ["/usr/bin/dpkg", "--version"]
+    },
+    {
+      "id": "component.apt.version",
+      "component": "apt",
+      "argv": ["/usr/bin/apt-get", "--version"]
+    }
+  ]
+}

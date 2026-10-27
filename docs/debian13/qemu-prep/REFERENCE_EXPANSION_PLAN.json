@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "evidence_source": "tests/debian13/evidence/reference-syscalls.json",
+  "purpose": "Expand the existing shallow version/help oracle into dependency-ordered runtime scenarios before each step is released.",
+  "scenarios": [
+    {
+      "id": "s31.dynamic-coreutils",
+      "step": 31,
+      "kind": "reference_guest",
+      "goal": "Execute unchanged dynamically linked Debian utilities through the normal loader and capture PT_INTERP/TLS/auxv/bootstrap requirements.",
+      "candidate_commands": ["/bin/true", "/bin/echo kernal-step31", "/bin/sh -c 'printf kernal-step31-shell\\n'"],
+      "required_observables": ["exit status", "syscalls", "loader/library paths", "mappings", "signals", "futex/TLS bootstrap"],
+      "status": "PLANNED"
+    },
+    {
+      "id": "s32.tty-pty",
+      "step": 32,
+      "kind": "reference_guest",
+      "goal": "Freeze console/TTY ioctl and PTY child-shell behavior.",
+      "candidate_commands": ["stty -a", "tty", "sh -c 'printf tty-ok\\n'"],
+      "required_observables": ["TCGETS/TIOCGWINSZ and required ioctls", "read/write behavior", "foreground pgrp/session behavior", "PTY master/slave lifetime"],
+      "status": "PLANNED"
+    },
+    {
+      "id": "s33.rw-root-pseudofs",
+      "step": 33,
+      "kind": "reference_guest_overlay",
+      "goal": "Freeze mount/root-switch/pseudo-fs and durability baseline on a disposable overlay.",
+      "candidate_commands": ["mount", "cat /proc/self/status", "cat /proc/filesystems", "test -d /sys", "sync"],
+      "required_observables": ["mount/umount", "statfs/fstatfs", "proc/sys paths", "create/write/read/truncate/rename", "fsync/fdatasync/syncfs"],
+      "status": "PLANNED"
+    },
+    {
+      "id": "s34.network-stack",
+      "step": 34,
+      "kind": "reference_guest",
+      "goal": "Freeze loopback, NETLINK_ROUTE, AF_UNIX, DNS, TCP and UDP requirements.",
+      "candidate_commands": ["ip link show lo", "getent hosts kernal-qemu.test"],
+      "required_observables": ["AF_NETLINK/NETLINK_ROUTE", "AF_UNIX", "socket options", "DNS UDP/TCP", "outbound TCP", "outbound UDP", "nonblocking behavior"],
+      "status": "PLANNED"
+    },
+    {
+      "id": "s35.event-fds",
+      "step": 35,
+      "kind": "small_reference_fixture",
+      "goal": "Measure Linux behavior for the exact event-descriptor subset required by systemd/dbus.",
+      "required_observables": ["epoll", "eventfd", "timerfd", "signalfd", "inotify", "memfd seals", "pidfd if observed", "close_range"],
+      "status": "PLANNED"
+    },
+    {
+      "id": "s36.systemd-feature-probes",
+      "step": 36,
+      "kind": "reference_guest",
+      "goal": "Classify systemd namespace/cgroup/rlimit/security probes as required, fallback-capable or unsupported.",
+      "required_observables": ["cgroup v2 paths/controllers", "prlimit/rlimit enforcement", "namespace syscalls", "capability/securebits view", "seccomp/keyring/audit/BPF fallback behavior"],
+      "status": "PLANNED"
+    },
+    {
+      "id": "s37.systemd-pid1",
+      "step": 37,
+      "kind": "full_reference_boot",
+      "goal": "Capture the normal Debian systemd PID-1 path to the selected server target and service lifecycle.",
+      "required_observables": ["PID 1", "target reached", "three service start/stop/restart cycles", "journaling/diagnostic dependencies", "reboot/poweroff requests"],
+      "status": "PLANNED"
+    },
+    {
+      "id": "s38.udev-devices",
+      "step": 38,
+      "kind": "reference_guest",
+      "goal": "Capture normal udev visibility for console, selected VirtIO block and selected VirtIO NIC.",
+      "required_observables": ["sysfs hierarchy", "uevents", "device identities", "device nodes", "add/remove lifetime"],
+      "status": "PLANNED"
+    },
+    {
+      "id": "s39.package-transaction",
+      "step": 39,
+      "kind": "reference_guest_overlay",
+      "goal": "Capture a real package-management transaction against the pinned snapshot without mutating the pinned base image.",
+      "candidate_commands": ["dpkg --configure -a", "apt-get update"],
+      "candidate_package": "hello",
+      "package_rule": "Pin the exact package version/hash from the selected snapshot before this scenario becomes PREP_READY.",
+      "required_observables": ["file/advisory locking", "rename/link/unlink", "truncate/mmap", "fsync/fdatasync/syncfs", "metadata/xattrs/ACLs if used", "DNS/TCP/time/entropy", "install/remove consistency"],
+      "status": "PLANNED"
+    },
+    {
+      "id": "s40.final-qemu-product",
+      "step": 40,
+      "kind": "kernal_acceptance",
+      "goal": "Run the entire accepted Debian server profile on one exact unchanged Kernal SHA.",
+      "required_observables": ["systemd PID1", "local shell/login", "dynamic glibc", "RW root", "pseudo-fs", "VirtIO NIC", "DNS", "TCP/UDP", "systemctl", "udev", "dpkg", "apt install", "host-reachable TCP service", "reboot", "poweroff", "three clean repeated boots"],
+      "status": "PLANNED"
+    }
+  ]
+}

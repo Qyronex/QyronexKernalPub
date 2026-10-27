@@ -1,0 +1,19 @@
+[package]
+name = "kernal-linux-fd"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+kernal-linux-pipe = { path = "../linux-pipe" }
+kernal-linux-vfs = { path = "../linux-vfs" }
+
+[dev-dependencies]
+kernal-cpio = { path = "../cpio" }
+kernal-percpu = { path = "../percpu" }
+kernal-scheduler = { path = "../scheduler" }
+kernal-scheduler-smp = { path = "../scheduler-smp" }

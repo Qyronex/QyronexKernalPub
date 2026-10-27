@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "platforms": [
+    {
+      "platform_id": "arm64-proof-platform-001",
+      "proof_state": "PLANNED",
+      "vendor": "TBD",
+      "model": "TBD",
+      "architecture": "aarch64",
+      "firmware_boot": ["UEFI", "DT"],
+      "cpu_count": 1,
+      "gicv3": "REQUIRED",
+      "psci": "REQUIRED",
+      "serial_console": "REQUIRED",
+      "recovery_path": "REQUIRED",
+      "device_inventory": ["storage", "network"],
+      "smmuv3": {"presence": "UNKNOWN", "proof_state": "PLANNED"},
+      "evidence": {"boot_log_sha256": null, "serial_log_sha256": null, "device_inventory_sha256": null, "tested_commit": null},
+      "unsupported_declarations": ["native Apple-Silicon platform support is not implied", "undeclared devices are unsupported until separately proven"]
+    }
+  ],
+  "required_fields_for_accepted_proof": ["boot_log_sha256","serial_log_sha256","device_inventory_sha256","tested_commit"]
+}

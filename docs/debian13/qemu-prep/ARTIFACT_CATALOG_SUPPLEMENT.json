@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "supplements": "docs/debian13/qemu-prep/ARTIFACT_CATALOG.json",
+  "purpose": "Latest executable/reference PREP additions created after the base artifact catalog. Read together with the base catalog until the next catalog compaction.",
+  "artifacts": [
+    {"id":"qemu.fixture-toolchain","kind":"tool","state":"PRESENT","path":"tools/qemu-prep/prepare_reference_fixture_toolchain.sh","consumer_steps":[32,33,34,35,39]},
+    {"id":"qemu.current-executable-index","kind":"index","state":"PRESENT","path":"docs/debian13/qemu-prep/00_CURRENT_EXECUTABLE_PREP.md","consumer_steps":[31,32,33,34,35,36,37,38,39,40]},
+    {"id":"step32.pty-probe-source","kind":"reference_probe_source","state":"PRESENT","path":"tests/qemu-prep/step32/pty_probe.c","consumer_steps":[32,37,40]},
+    {"id":"step32.pty-probe-runner","kind":"tool","state":"PRESENT","path":"tools/qemu-prep/step32/build_run_pty_probe.sh","consumer_steps":[32]},
+    {"id":"step33.rootfs-reference-collector","kind":"tool","state":"PRESENT","path":"tools/qemu-prep/step33/collect_rootfs_reference.sh","consumer_steps":[33,39,40]},
+    {"id":"step33.filesystem-probe-source","kind":"reference_probe_source","state":"PRESENT","path":"tests/qemu-prep/step33/filesystem_probe.c","consumer_steps":[33,39,40]},
+    {"id":"step33.filesystem-probe-runner","kind":"tool","state":"PRESENT","path":"tools/qemu-prep/step33/build_run_filesystem_probe.sh","consumer_steps":[33]},
+    {"id":"step34.network-reference-collector","kind":"tool","state":"PRESENT","path":"tools/qemu-prep/step34/collect_network_reference.sh","consumer_steps":[34,39,40]},
+    {"id":"step34.network-probe-source","kind":"reference_probe_source","state":"PRESENT","path":"tests/qemu-prep/step34/network_probe.c","consumer_steps":[34,39,40]},
+    {"id":"step34.network-probe-runner","kind":"tool","state":"PRESENT","path":"tools/qemu-prep/step34/build_run_network_probe.sh","consumer_steps":[34]},
+    {"id":"step35.event-fd-probe-source","kind":"reference_probe_source","state":"PRESENT","path":"tests/qemu-prep/step35/event_fd_probe.c","consumer_steps":[35,37,40]},
+    {"id":"step35.event-fd-probe-runner","kind":"tool","state":"PRESENT","path":"tools/qemu-prep/step35/build_run_event_probe.sh","consumer_steps":[35]},
+    {"id":"step36.systemd-feature-collector-strict","kind":"tool","state":"PRESENT","path":"tools/qemu-prep/step36/collect_systemd_feature_reference_strict.sh","consumer_steps":[36,37,40]},
+    {"id":"step37.pid1-reference-collector","kind":"tool","state":"PRESENT","path":"tools/qemu-prep/step37/collect_pid1_reference.sh","consumer_steps":[37,38,39,40]},
+    {"id":"step38.udev-reference-collector","kind":"tool","state":"PRESENT","path":"tools/qemu-prep/step38/collect_udev_reference.sh","consumer_steps":[38,40]},
+    {"id":"step39.lock-probe-source","kind":"reference_probe_source","state":"PRESENT","path":"tests/qemu-prep/step39/lock_probe.c","consumer_steps":[39]},
+    {"id":"step39.lock-probe-runner","kind":"tool","state":"PRESENT","path":"tools/qemu-prep/step39/build_run_lock_probe.sh","consumer_steps":[39]},
+    {"id":"step40.final-evidence-validator-strict","kind":"tool","state":"PRESENT","path":"tools/qemu-prep/step40/validate_final_evidence_bundle.py","consumer_steps":[40]},
+    {"id":"step40.final-evidence-validator-tests","kind":"test","state":"PRESENT","path":"tests/qemu-prep/test_step40_evidence.py","consumer_steps":[40]},
+    {"id":"step40.execution-handoff","kind":"handoff","state":"PRESENT","path":"docs/debian13/qemu-prep/step40/EXECUTION_HANDOFF.md","consumer_steps":[40]}
+  ]
+}

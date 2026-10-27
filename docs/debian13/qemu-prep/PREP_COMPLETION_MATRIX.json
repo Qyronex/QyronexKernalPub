@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "purpose": "Fast distinction between preparation already staged and evidence/runtime work that must still happen before each step can integrate or be accepted.",
+  "legend": {
+    "DESIGN_STAGED": "owner map, fixtures/vectors, integration order and acceptance targets are staged",
+    "REFERENCE_PENDING": "reference Debian scenario still needs to be executed/reviewed",
+    "RUNTIME_HOLD": "production kernel integration remains dependency-gated",
+    "RUNTIME_ACCEPTANCE_PENDING": "exact-SHA Kernal build/QEMU proof has not happened"
+  },
+  "steps": [
+    {
+      "step": 31,
+      "design_state": "DESIGN_STAGED",
+      "reference_state": "REFERENCE_PENDING",
+      "runtime_state": "RUNTIME_HOLD",
+      "acceptance_state": "RUNTIME_ACCEPTANCE_PENDING",
+      "prepared": ["three frozen exact-green PREP heads", "dynamic loader requirement map", "expanded safe reference cases", "owner landing map"],
+      "remaining": ["run/review deeper dynamic loader/coreutils reference cases", "rebase frozen heads onto accepted Step-30 merge", "runtime integrate + QEMU accept"]
+    },
+    {
+      "step": 32,
+      "design_state": "DESIGN_STAGED",
+      "reference_state": "REFERENCE_PENDING",
+      "runtime_state": "RUNTIME_HOLD",
+      "acceptance_state": "RUNTIME_ACCEPTANCE_PENDING",
+      "prepared": ["TTY/PTTY ioctl/lifetime vectors", "existing TCGETS/TIOCGWINSZ evidence", "job-control owner map"],
+      "remaining": ["capture exact termios/PTTY reference behavior", "runtime TTY/PTTY/device owner integration", "serial/PTY QEMU accept"]
+    },
+    {
+      "step": 33,
+      "design_state": "DESIGN_STAGED",
+      "reference_state": "REFERENCE_PENDING",
+      "runtime_state": "RUNTIME_HOLD",
+      "acceptance_state": "RUNTIME_ACCEPTANCE_PENDING",
+      "prepared": ["VirtIO-MMIO block profile + malformed vectors", "verified COW overlay helper", "RW-root/pseudo-fs vectors", "PCI fallback rule"],
+      "remaining": ["capture QEMU VirtIO-MMIO FDT sample", "select/prove persistent filesystem semantics", "reference mount/root-switch/durability cases", "runtime block/VFS/filesystem integration + QEMU accept"]
+    },
+    {
+      "step": 34,
+      "design_state": "DESIGN_STAGED",
+      "reference_state": "REFERENCE_PENDING",
+      "runtime_state": "RUNTIME_HOLD",
+      "acceptance_state": "RUNTIME_ACCEPTANCE_PENDING",
+      "prepared": ["VirtIO-MMIO NIC preference + PCI fallback", "AF_UNIX/netlink/DNS/TCP/UDP topology", "deterministic host TCP/UDP endpoints", "existing NETLINK_ROUTE evidence"],
+      "remaining": ["capture deeper AF_UNIX/DNS/TCP/UDP reference behavior", "decide target-required IPv6/socket options/config path", "runtime network/socket integration + QEMU accept"]
+    },
+    {
+      "step": 35,
+      "design_state": "DESIGN_STAGED",
+      "reference_state": "REFERENCE_PENDING",
+      "runtime_state": "RUNTIME_HOLD",
+      "acceptance_state": "RUNTIME_ACCEPTANCE_PENDING",
+      "prepared": ["epoll level/edge/oneshot vectors", "eventfd/timerfd/signalfd/inotify/memfd vectors", "fd-generation negatives", "close_range observed requirement"],
+      "remaining": ["execute dedicated Linux reference fixture", "classify pidfd exact requirement", "runtime event-descriptor owner integration + QEMU accept"]
+    },
+    {
+      "step": 36,
+      "design_state": "DESIGN_STAGED",
+      "reference_state": "REFERENCE_PENDING",
+      "runtime_state": "RUNTIME_HOLD",
+      "acceptance_state": "RUNTIME_ACCEPTANCE_PENDING",
+      "prepared": ["systemd feature classification", "existing cgroup/prlimit/prctl/capability probes", "required-vs-fallback security policy"],
+      "remaining": ["full PID1 feature trace", "pin exact namespace/controller subset", "reference enforcement/fallback cases", "runtime cgroup/namespace/rlimit integration + QEMU accept"]
+    },
+    {
+      "step": 37,
+      "design_state": "DESIGN_STAGED",
+      "reference_state": "REFERENCE_PENDING",
+      "runtime_state": "RUNTIME_HOLD",
+      "acceptance_state": "RUNTIME_ACCEPTANCE_PENDING",
+      "prepared": ["PID1 marker schema", "first-failure classifier", "service/reboot/poweroff evidence contract"],
+      "remaining": ["capture real reference PID1 boot", "pin three ordinary services", "runtime first-failure closure loop", "systemd target/service/shutdown QEMU accept"]
+    },
+    {
+      "step": 38,
+      "design_state": "DESIGN_STAGED",
+      "reference_state": "REFERENCE_PENDING",
+      "runtime_state": "RUNTIME_HOLD",
+      "acceptance_state": "RUNTIME_ACCEPTANCE_PENDING",
+      "prepared": ["selected console/block/NIC udev expectations", "sysfs/uevent projection rules", "stale-authority negatives"],
+      "remaining": ["capture full udev daemon/enumeration reference trace", "pin exact consumed sysfs/uevent attributes", "runtime sysfs/uevent projection + QEMU accept"]
+    },
+    {
+      "step": 39,
+      "design_state": "DESIGN_STAGED",
+      "reference_state": "REFERENCE_PENDING",
+      "runtime_state": "RUNTIME_HOLD",
+      "acceptance_state": "RUNTIME_ACCEPTANCE_PENDING",
+      "prepared": ["COW-only package transaction plan", "snapshot-only source generator", "exact package pin tool", "reference transaction runner", "durability/failure-injection plan"],
+      "remaining": ["pin exact package version/hash from snapshot", "run/review real dpkg/apt transactions", "derive exact lock/durability/xattr/ACL needs", "runtime closure + QEMU accept"]
+    },
+    {
+      "step": 40,
+      "design_state": "DESIGN_STAGED",
+      "reference_state": "REFERENCE_PENDING",
+      "runtime_state": "RUNTIME_HOLD",
+      "acceptance_state": "RUNTIME_ACCEPTANCE_PENDING",
+      "prepared": ["21-check final acceptance schema", "QEMU argv template", "rootfs hashes/profile", "verified overlay helper", "network host endpoints", "three-boot policy", "failure routing"],
+      "remaining": ["resolve final QEMU version/transport/service/package selections after prior steps", "implement final machine-readable harness/markers", "freeze exact Step-40 SHA", "run full Debian acceptance"]
+    }
+  ],
+  "global_remaining_before_runtime_can_move_fast": [
+    "run the host-side PREP validator suite on the current reconciled branch head and record the exact head/result",
+    "execute and review the staged reference scenarios on the pinned Debian 13 ARM64 oracle",
+    "freeze a reviewed PREP handoff head after validator/reference updates",
+    "keep all Step 31-40 production runtime integration dependency-gated and single-writer"
+  ]
+}

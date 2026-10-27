@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "cases": [
+    {"id":"valid-single-function","bus_start":0,"bus_end":0,"bus":0,"device":1,"function":0,"owner":"kernel","cap_ptr":64,"caps":{"64":{"id":5,"next":0}},"bars":[{"base":4096,"size":4096}],"expected":"accept"},
+    {"id":"valid-multifunction","bus_start":0,"bus_end":7,"bus":2,"device":4,"function":7,"owner":"kernel","cap_ptr":64,"caps":{"64":{"id":17,"next":72},"72":{"id":5,"next":0}},"bars":[{"base":8192,"size":4096}],"expected":"accept"},
+    {"id":"bus-out-of-range","bus_start":0,"bus_end":3,"bus":4,"device":0,"function":0,"owner":"kernel","cap_ptr":0,"caps":{},"bars":[],"expected":"reject"},
+    {"id":"device-out-of-range","bus_start":0,"bus_end":0,"bus":0,"device":32,"function":0,"owner":"kernel","cap_ptr":0,"caps":{},"bars":[],"expected":"reject"},
+    {"id":"capability-loop","bus_start":0,"bus_end":0,"bus":0,"device":2,"function":0,"owner":"kernel","cap_ptr":64,"caps":{"64":{"id":5,"next":72},"72":{"id":17,"next":64}},"bars":[],"expected":"reject"},
+    {"id":"capability-misaligned","bus_start":0,"bus_end":0,"bus":0,"device":2,"function":0,"owner":"kernel","cap_ptr":66,"caps":{},"bars":[],"expected":"reject"},
+    {"id":"bar-size-not-power-two","bus_start":0,"bus_end":0,"bus":0,"device":3,"function":0,"owner":"kernel","cap_ptr":0,"caps":{},"bars":[{"base":12288,"size":3072}],"expected":"reject"},
+    {"id":"bar-misaligned","bus_start":0,"bus_end":0,"bus":0,"device":3,"function":0,"owner":"kernel","cap_ptr":0,"caps":{},"bars":[{"base":6144,"size":4096}],"expected":"reject"},
+    {"id":"bar-overflow","bus_start":0,"bus_end":0,"bus":0,"device":3,"function":0,"owner":"kernel","cap_ptr":0,"caps":{},"bars":[{"base":18446744073709549568,"size":4096}],"expected":"reject"},
+    {"id":"predelegated-authority","bus_start":0,"bus_end":0,"bus":0,"device":4,"function":0,"owner":"foreign","cap_ptr":0,"caps":{},"bars":[],"expected":"reject"}
+  ]
+}

@@ -1,0 +1,13 @@
+[package]
+name = "kernal-linux-clone-aarch64"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+kernal-context-aarch64 = { path = "../context-aarch64" }
+kernal-exceptions-aarch64 = { path = "../exceptions-aarch64" }
+kernal-linux-clone = { path = "../linux-clone" }
+kernal-thread-context = { path = "../thread-context" }
+kernal-user-entry-aarch64 = { path = "../user-entry-aarch64" }

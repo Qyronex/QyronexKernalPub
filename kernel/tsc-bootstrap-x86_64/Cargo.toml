@@ -1,0 +1,17 @@
+[package]
+name = "kernal-tsc-bootstrap-x86-64"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+kernal-acpi-fadt-physical = { path = "../../firmware/acpi-fadt-physical" }
+kernal-acpi-physical = { path = "../../firmware/acpi-physical" }
+kernal-arch-x86-64 = { path = "../arch-x86_64" }
+kernal-physical-io = { path = "../physical-io" }
+kernal-pm-timer-x86-64 = { path = "../pm-timer-x86_64" }
+kernal-tsc-x86-64 = { path = "../tsc-x86_64" }

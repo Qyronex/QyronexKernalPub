@@ -1,0 +1,35 @@
+{
+  "schema": "kernal-step-scientific-endpoint-v1",
+  "step": 39,
+  "state": "DESIGN_CONTRACT",
+  "research_question": "Can unchanged Debian dpkg/apt complete durable package transactions on Kernal without corrupting package state under controlled failures?",
+  "claim_bindings": ["compat.debian13-arm64", "performance.kernel-runtime"],
+  "metrics": [
+    {"name":"dpkg_transactions_passed","type":"integer","unit":"transactions"},
+    {"name":"dpkg_transactions_total","type":"integer","unit":"transactions"},
+    {"name":"apt_update_success_rate","type":"number","unit":"percent"},
+    {"name":"package_install_remove_passed","type":"integer","unit":"cases"},
+    {"name":"package_install_remove_total","type":"integer","unit":"cases"},
+    {"name":"advisory_lock_semantic_divergences","type":"integer","unit":"cases"},
+    {"name":"fsync_or_syncfs_durability_failures","type":"integer","unit":"cases"},
+    {"name":"injected_process_failure_recovery_failures","type":"integer","unit":"cases"},
+    {"name":"database_consistency_failures","type":"integer","unit":"cases"},
+    {"name":"transaction_duration_p50_ms","type":"number","unit":"milliseconds"},
+    {"name":"transaction_duration_p95_ms","type":"number","unit":"milliseconds"},
+    {"name":"transaction_duration_p99_ms","type":"number","unit":"milliseconds"},
+    {"name":"bytes_written","type":"integer","unit":"bytes"},
+    {"name":"package_operation_cpu_ms","type":"number","unit":"milliseconds"}
+  ],
+  "negative_controls": [
+    "killed/interrupted transactions must recover according to the pinned reference contract",
+    "stale locks and lock contention must not be silently ignored",
+    "rename/fsync/syncfs durability boundaries must not return fake success",
+    "ENOSPC/read-only/error paths must preserve package database consistency where the reference does"
+  ],
+  "hard_zero_metrics": ["database_consistency_failures"],
+  "environment_fields": ["tested_commit", "architecture", "debian_target_id", "rootfs_hashes", "snapshot_repository_id", "package_identity_hash", "qemu_version", "qemu_profile_id", "toolchain", "fixture_hashes", "filesystem_profile"],
+  "baseline": {"kind":"pinned-debian13-arm64-linux", "required_for":["dpkg_transactions_passed", "dpkg_transactions_total", "advisory_lock_semantic_divergences", "transaction_duration_p50_ms", "transaction_duration_p95_ms", "transaction_duration_p99_ms"]},
+  "repetition_policy": {"minimum_runs":10, "timing_metrics":"use disposable verified overlays and report distribution/variance per exact package transaction"},
+  "promotion_rule": {"to_measured":"exact-SHA transaction and failure-injection evidence must identify package/repository/rootfs hashes and preserve database consistency", "to_replicated":"independent reproduction against the same pinned snapshot/package inputs is required"},
+  "raw_evidence_contract": {"format":"json", "path_template":"research/runtime/step39/<tested_commit>.json", "required_fields":["tested_commit", "environment", "metrics", "transaction_inputs", "failure_injection", "raw_artifact_hash"]}
+}

@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "step": 37,
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "purpose": "Define deterministic evidence and first-failure classification for unchanged Debian systemd as PID 1.",
+  "required_markers": [
+    {"id": "pid1.exec", "meaning": "Debian-provided /usr/lib/systemd/systemd entered as PID 1"},
+    {"id": "pid1.dynamic-loader", "meaning": "systemd and required shared libraries entered through normal Step-31 loader path"},
+    {"id": "pid1.mount-baseline", "meaning": "required tmpfs/procfs/sysfs/devpts/root mounts reached expected state"},
+    {"id": "pid1.cgroup-baseline", "meaning": "selected Step-36 cgroup v2 profile initialized without mandatory missing contract"},
+    {"id": "pid1.target", "meaning": "documented basic/multi-user server target reached"},
+    {"id": "service.one", "meaning": "ordinary service 1 start/stop/restart passed"},
+    {"id": "service.two", "meaning": "ordinary service 2 start/stop/restart passed"},
+    {"id": "service.three", "meaning": "ordinary service 3 start/stop/restart passed"},
+    {"id": "shutdown.reboot", "meaning": "normal userspace reboot request reached kernel shutdown path cleanly"},
+    {"id": "shutdown.poweroff", "meaning": "normal userspace poweroff request reached kernel shutdown path cleanly"}
+  ],
+  "failure_classes": [
+    "ELF_LOADER",
+    "VM_USERCOPY",
+    "VFS_PATH_OR_METADATA",
+    "FD_OR_EVENT_DESCRIPTOR",
+    "TTY_DEVICE",
+    "MOUNT_OR_PSEUDOFS",
+    "BLOCK_OR_FILESYSTEM",
+    "NETWORK_OR_SOCKET",
+    "SIGNAL_OR_PROCESS_LIFECYCLE",
+    "CGROUP_NAMESPACE_RLIMIT",
+    "SECURITY_FEATURE_PROBE",
+    "UDEV_DEVICE_VISIBILITY",
+    "TIME_ENTROPY",
+    "UNCLASSIFIED"
+  ],
+  "first_failure_record": {
+    "required_fields": [
+      "kernal_source_sha",
+      "target_id",
+      "qemu_profile_id",
+      "first_failing_process",
+      "observable_operation",
+      "linux_reference_behavior",
+      "kernal_behavior",
+      "failure_class",
+      "canonical_owner",
+      "compatibility_matrix_rows",
+      "log_excerpt_hash"
+    ],
+    "rule": "Fix only the first deterministic mandatory failure at the smallest existing owner; do not add a systemd-specific kernel path."
+  },
+  "service_selection_rule": "Pin three ordinary services available in the exact Debian target before Step-37 PREP becomes PREP_READY; service names must be recorded in the final Step-37 manifest and must not require Kernal-specific unit patches.",
+  "runtime_owner_rules": [
+    "no systemd-named kernel subsystem",
+    "no process-name special cases",
+    "every discovered blocker routes back to Steps 31-36 canonical owners",
+    "unsupported optional features use documented Linux-compatible fallback/error behavior"
+  ]
+}

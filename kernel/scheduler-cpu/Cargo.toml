@@ -1,0 +1,21 @@
+[package]
+name = "kernal-scheduler-cpu"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+kernal-arch-aarch64 = { path = "../arch-aarch64" }
+kernal-context-aarch64 = { path = "../context-aarch64" }
+kernal-context-x86-64 = { path = "../context-x86_64" }
+kernal-irq-state-x86-64 = { path = "../irq-state-x86_64" }
+kernal-percpu = { path = "../percpu" }
+kernal-percpu-aarch64 = { path = "../percpu-aarch64" }
+kernal-percpu-x86-64 = { path = "../percpu-x86_64" }
+kernal-scheduler = { path = "../scheduler" }
+kernal-scheduler-smp = { path = "../scheduler-smp" }
+kernal-thread-context = { path = "../thread-context" }

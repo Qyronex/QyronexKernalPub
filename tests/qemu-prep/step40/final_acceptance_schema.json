@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "step": 40,
+  "profile_id": "kernal-debian13-arm64-qemu-fastpath-v1",
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "purpose": "Machine-readable contract for the first bounded claim that Kernal boots the pinned Debian 13 ARM64 Server userspace in AArch64 QEMU.",
+  "exact_identity": {
+    "required": [
+      "kernal_source_sha",
+      "debian_target_id",
+      "rootfs_sha512",
+      "rootfs_sha256",
+      "qemu_version",
+      "complete_qemu_argv",
+      "transport_block",
+      "transport_net",
+      "cpu_count",
+      "memory_bytes"
+    ],
+    "source_sha_policy": "one unchanged exact SHA for the complete final acceptance run"
+  },
+  "checks": [
+    {"id": "systemd.pid1", "required": true, "evidence": ["PID 1 executable identity", "selected server target reached"]},
+    {"id": "console.local-shell", "required": true, "evidence": ["authenticated or equivalent documented local shell", "TTY path"]},
+    {"id": "glibc.dynamic", "required": true, "evidence": ["Debian dynamic loader path", "unchanged dynamic executable exit 0"]},
+    {"id": "root.rw", "required": true, "evidence": ["VirtIO-backed root identity", "read/write/create/rename/fsync smoke"]},
+    {"id": "pseudofs", "required": true, "evidence": ["tmpfs", "procfs", "sysfs", "devpts", "required device nodes"]},
+    {"id": "network.loopback", "required": true, "evidence": ["loopback up", "local exchange"]},
+    {"id": "network.virtio", "required": true, "evidence": ["selected VirtIO NIC identity", "TX/RX"]},
+    {"id": "network.dns", "required": true, "evidence": ["unchanged glibc resolver success"]},
+    {"id": "network.tcp-outbound", "required": true, "evidence": ["deterministic endpoint exchange"]},
+    {"id": "network.udp-outbound", "required": true, "evidence": ["deterministic endpoint exchange"]},
+    {"id": "systemctl.lifecycle", "required": true, "evidence": ["three documented ordinary services start/stop/restart"]},
+    {"id": "udev.selected-devices", "required": true, "evidence": ["console", "selected block", "selected NIC through normal udev path"]},
+    {"id": "dpkg.operation", "required": true, "evidence": ["documented dpkg operation exit 0", "consistent database"]},
+    {"id": "apt.update", "required": true, "evidence": ["pinned snapshot update exit 0"]},
+    {"id": "apt.install", "required": true, "evidence": ["exact documented package/version installation exit 0"]},
+    {"id": "tcp.host-reachable", "required": true, "evidence": ["guest server on TCP/8080", "host connection through recorded hostfwd"]},
+    {"id": "shutdown.reboot", "required": true, "evidence": ["normal userspace request", "clean kernel/QEMU outcome"]},
+    {"id": "shutdown.poweroff", "required": true, "evidence": ["normal userspace request", "clean kernel/QEMU outcome"]},
+    {"id": "repeat.boots", "required": true, "evidence": ["three consecutive clean boots", "no accumulated filesystem/process/device corruption"]},
+    {"id": "unsupported.explicit", "required": true, "evidence": ["selected unsupported calls/features return explicit Linux-compatible failure instead of fake success"]},
+    {"id": "security.invariants", "required": true, "evidence": ["W^X", "null page", "guard pages", "capability isolation", "memory ownership", "IRQ/DMA fail-closed behavior"]}
+  ],
+  "failure_routing": {
+    "rule": "Step 40 owns acceptance composition, not new compatibility semantics.",
+    "action": "Route each new failure to the smallest Step 31-39 canonical owner and rerun the complete exact-SHA chain after source movement."
+  },
+  "repeat_boot_policy": {
+    "minimum": 3,
+    "overlay_policy": "same declared persistent test overlay when checking accumulated state; pristine overlay used for clean-baseline comparisons",
+    "record_each_boot": ["boot_index", "start_time", "end_state", "filesystem_check", "service_check", "device_check"]
+  },
+  "bounded_claim": "Kernal boots the documented pinned Debian 13 ARM64 Server userspace in AArch64 QEMU.",
+  "forbidden_claims": ["complete Linux drop-in compatibility", "production certification", "x86_64 parity", "real-hardware parity"]
+}

@@ -1,0 +1,32 @@
+[package]
+name = "kernal-boot-uefi"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[[bin]]
+name = "kernal-boot-uefi"
+path = "src/main.rs"
+test = false
+bench = false
+
+[dependencies]
+kernal-ap-startup-x86-64 = { path = "../../kernel/ap-startup-x86_64" }
+kernal-arch-x86-64 = { path = "../../kernel/arch-x86_64" }
+kernal-bootinfo = { path = "../../abi/bootinfo" }
+kernal-elf = { path = "../elf" }
+kernal-handoff = { path = "../handoff" }
+kernal-kmap-x86-64 = { path = "../../kernel/kmap-x86_64" }
+kernal-load-plan = { path = "../load-plan" }
+kernal-mapping-plan = { path = "../mapping-plan" }
+kernal-memory-map = { path = "../memory-map" }
+kernal-page-table = { path = "../../kernel/page-table" }
+kernal-paging = { path = "../../kernel/paging" }
+kernal-recursive-paging-x86-64 = { path = "../../kernel/recursive-paging-x86_64" }
+kernal-transition-x86-64 = { path = "../transition-x86_64" }
+uefi = { version = "0.40.0", features = ["alloc", "global_allocator"] }
+
+[features]
+default = []
+qemu-exit = []

@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "deterministic_seed": 240026,
+  "required_metrics": ["p50_us","p99_us","p99_9_us","lock_contention_pct","remote_wake_us","allocation_failures"],
+  "required_workloads": ["scheduler-load-skew","remote-wake-storm","allocation-churn","irq-affinity-churn","fault-injection"],
+  "profiles": [
+    {"id":"qemu-1vcpu","vcpus":1,"numa_nodes":1,"duration_sec":60,"repetitions":3,"workloads":["scheduler-load-skew","remote-wake-storm","allocation-churn","irq-affinity-churn","fault-injection"],"metrics":["p50_us","p99_us","p99_9_us","lock_contention_pct","remote_wake_us","allocation_failures"]},
+    {"id":"qemu-2vcpu","vcpus":2,"numa_nodes":1,"duration_sec":60,"repetitions":3,"workloads":["scheduler-load-skew","remote-wake-storm","allocation-churn","irq-affinity-churn","fault-injection"],"metrics":["p50_us","p99_us","p99_9_us","lock_contention_pct","remote_wake_us","allocation_failures"]},
+    {"id":"qemu-4vcpu","vcpus":4,"numa_nodes":1,"duration_sec":90,"repetitions":3,"workloads":["scheduler-load-skew","remote-wake-storm","allocation-churn","irq-affinity-churn","fault-injection"],"metrics":["p50_us","p99_us","p99_9_us","lock_contention_pct","remote_wake_us","allocation_failures"]},
+    {"id":"qemu-8vcpu","vcpus":8,"numa_nodes":1,"duration_sec":120,"repetitions":3,"workloads":["scheduler-load-skew","remote-wake-storm","allocation-churn","irq-affinity-churn","fault-injection"],"metrics":["p50_us","p99_us","p99_9_us","lock_contention_pct","remote_wake_us","allocation_failures"]},
+    {"id":"qemu-16vcpu","vcpus":16,"numa_nodes":2,"duration_sec":180,"repetitions":3,"workloads":["scheduler-load-skew","remote-wake-storm","allocation-churn","irq-affinity-churn","fault-injection"],"metrics":["p50_us","p99_us","p99_9_us","lock_contention_pct","remote_wake_us","allocation_failures"]}
+  ],
+  "acceptance_targets": {"giant_global_lock_forbidden":true,"record_raw_samples":true,"record_exact_tested_commit":true,"record_qemu_argv":true}
+}

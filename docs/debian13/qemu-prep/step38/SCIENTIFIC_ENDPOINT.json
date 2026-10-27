@@ -1,0 +1,33 @@
+{
+  "schema": "kernal-step-scientific-endpoint-v1",
+  "step": 38,
+  "state": "DESIGN_CONTRACT",
+  "research_question": "Can Kernal expose the selected console, block and network devices to unchanged systemd-udevd with Linux-compatible lifecycle visibility and no stale device authority?",
+  "claim_bindings": ["compat.debian13-arm64", "authority.capability-isolation", "performance.kernel-runtime"],
+  "metrics": [
+    {"name":"expected_devices_observed","type":"integer","unit":"devices"},
+    {"name":"expected_devices_total","type":"integer","unit":"devices"},
+    {"name":"missing_devices","type":"integer","unit":"devices"},
+    {"name":"unexpected_device_aliases","type":"integer","unit":"devices"},
+    {"name":"uevent_delivery_failures","type":"integer","unit":"events"},
+    {"name":"device_discovery_p50_ms","type":"number","unit":"milliseconds"},
+    {"name":"device_discovery_p95_ms","type":"number","unit":"milliseconds"},
+    {"name":"device_discovery_p99_ms","type":"number","unit":"milliseconds"},
+    {"name":"hotplug_add_remove_passed","type":"integer","unit":"cases"},
+    {"name":"hotplug_add_remove_total","type":"integer","unit":"cases"},
+    {"name":"stale_device_authority_acceptances","type":"integer","unit":"cases"},
+    {"name":"stale_node_access_successes","type":"integer","unit":"cases"},
+    {"name":"device_lifecycle_leaks","type":"integer","unit":"objects"}
+  ],
+  "negative_controls": [
+    "removed device generations must reject stale authority and stale node access",
+    "malformed uevents/sysfs accesses must remain bounded",
+    "sysfs and uevents must project canonical device facts rather than create a shadow authority registry"
+  ],
+  "hard_zero_metrics": ["stale_device_authority_acceptances", "stale_node_access_successes", "device_lifecycle_leaks"],
+  "environment_fields": ["tested_commit", "architecture", "debian_target_id", "rootfs_hashes", "qemu_version", "qemu_profile_id", "toolchain", "fixture_hashes", "device_profile"],
+  "baseline": {"kind":"pinned-debian13-arm64-linux", "required_for":["expected_devices_observed", "expected_devices_total", "device_discovery_p50_ms", "device_discovery_p95_ms", "device_discovery_p99_ms"]},
+  "repetition_policy": {"minimum_runs":20, "timing_metrics":"report distribution/variance for cold enumeration and any claimed hotplug profile"},
+  "promotion_rule": {"to_measured":"exact-SHA evidence must cover selected device visibility plus all hard-zero stale-authority negatives", "to_replicated":"independent reproduction of the same QEMU device profile is required"},
+  "raw_evidence_contract": {"format":"json", "path_template":"research/runtime/step38/<tested_commit>.json", "required_fields":["tested_commit", "environment", "metrics", "device_expectations", "raw_artifact_hash"]}
+}

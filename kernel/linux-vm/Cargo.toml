@@ -1,0 +1,14 @@
+[package]
+name = "kernal-linux-vm"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+kernal-capability = { path = "../capability" }
+kernal-linux-abi = { path = "../../abi/linux" }
+kernal-vm = { path = "../vm" }
+
+[lib]
+path = "src/lib.rs"

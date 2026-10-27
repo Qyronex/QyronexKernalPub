@@ -1,0 +1,23 @@
+[package]
+name = "kernal-linux-vm-aarch64"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+kernal-address-space-aarch64 = { path = "../address-space-aarch64" }
+kernal-frame-allocator = { path = "../frame-allocator" }
+kernal-kmap = { path = "../kmap" }
+kernal-kmap-aarch64 = { path = "../kmap-aarch64" }
+kernal-linux-abi = { path = "../../abi/linux" }
+kernal-linux-vm = { path = "../linux-vm" }
+kernal-memory = { path = "../memory" }
+kernal-object = { path = "../object" }
+kernal-page-table-aarch64 = { path = "../page-table-aarch64" }
+kernal-process = { path = "../process" }
+kernal-process-aarch64 = { path = "../process-aarch64" }
+kernal-vm = { path = "../vm" }
+
+[lib]
+path = "src/lib.rs"

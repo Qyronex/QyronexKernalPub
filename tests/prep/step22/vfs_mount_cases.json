@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "track": "VFS_COMPAT",
+  "cases": [
+    {"id":"mount-read-ok","operation":"read","namespace":7,"handle_namespace":7,"volume_generation":11,"expected_generation":11,"path":"/srv/data/file","symlink_hops":0,"cross_mount_rename":false,"read_only":false,"expected":"accept"},
+    {"id":"mount-write-ok","operation":"write","namespace":7,"handle_namespace":7,"volume_generation":11,"expected_generation":11,"path":"/srv/data/file","symlink_hops":0,"cross_mount_rename":false,"read_only":false,"expected":"accept"},
+    {"id":"stale-volume-generation","operation":"read","namespace":7,"handle_namespace":7,"volume_generation":10,"expected_generation":11,"path":"/srv/data/file","symlink_hops":0,"cross_mount_rename":false,"read_only":false,"expected":"reject"},
+    {"id":"cross-namespace-handle","operation":"read","namespace":7,"handle_namespace":8,"volume_generation":11,"expected_generation":11,"path":"/srv/data/file","symlink_hops":0,"cross_mount_rename":false,"read_only":false,"expected":"reject"},
+    {"id":"dotdot-escape","operation":"read","namespace":7,"handle_namespace":7,"volume_generation":11,"expected_generation":11,"path":"/srv/data/../../etc/shadow","symlink_hops":0,"cross_mount_rename":false,"read_only":false,"expected":"reject"},
+    {"id":"symlink-loop","operation":"read","namespace":7,"handle_namespace":7,"volume_generation":11,"expected_generation":11,"path":"/srv/data/link","symlink_hops":41,"cross_mount_rename":false,"read_only":false,"expected":"reject"},
+    {"id":"same-mount-rename","operation":"rename","namespace":7,"handle_namespace":7,"volume_generation":11,"expected_generation":11,"path":"/srv/data/a","symlink_hops":0,"cross_mount_rename":false,"read_only":false,"expected":"accept"},
+    {"id":"cross-mount-rename","operation":"rename","namespace":7,"handle_namespace":7,"volume_generation":11,"expected_generation":11,"path":"/srv/data/a","symlink_hops":0,"cross_mount_rename":true,"read_only":false,"expected":"reject"},
+    {"id":"write-readonly-mount","operation":"write","namespace":7,"handle_namespace":7,"volume_generation":11,"expected_generation":11,"path":"/srv/data/file","symlink_hops":0,"cross_mount_rename":false,"read_only":true,"expected":"reject"}
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "allowed_states": [
+    "SUPPORTED_PROVEN",
+    "SUPPORTED_UNVERIFIED",
+    "PARTIAL",
+    "ENOSYS_UNSUPPORTED",
+    "NOT_REQUIRED"
+  ],
+  "unknown_operation_policy": {
+    "state": "ENOSYS_UNSUPPORTED",
+    "expected_errno": "ENOSYS",
+    "rule": "Unknown Linux operations must fail explicitly; never convert an unimplemented operation into success."
+  },
+  "components": [
+    {"id": "busybox", "program": "/usr/bin/busybox", "trace_state": "VERIFIED"},
+    {"id": "glibc-loader", "program": "/lib/ld-linux-aarch64.so.1", "trace_state": "VERIFIED"},
+    {"id": "bin-sh", "program": "/bin/sh", "trace_state": "VERIFIED"},
+    {"id": "systemd", "program": "/usr/lib/systemd/systemd", "trace_state": "VERIFIED"},
+    {"id": "udev", "program": "/usr/lib/systemd/systemd-udevd", "trace_state": "VERIFIED"},
+    {"id": "dbus", "program": "/usr/bin/dbus-daemon", "trace_state": "VERIFIED"},
+    {"id": "iproute2", "program": "/usr/sbin/ip", "trace_state": "VERIFIED"},
+    {"id": "dpkg", "program": "/usr/bin/dpkg", "trace_state": "VERIFIED"},
+    {"id": "apt", "program": "/usr/bin/apt-get", "trace_state": "VERIFIED"}
+  ],
+  "contracts": [
+    {
+      "id": "syscall.write",
+      "kind": "syscall",
+      "name": "write",
+      "state": "SUPPORTED_PROVEN",
+      "evidence": "Step 16 merge-SHA unchanged Linux ARM64 production proof"
+    },
+    {
+      "id": "syscall.exit_group",
+      "kind": "syscall",
+      "name": "exit_group",
+      "state": "SUPPORTED_PROVEN",
+      "evidence": "Step 16 merge-SHA proof-carrying group exit and Process finalization"
+    },
+    {
+      "id": "syscall.brk",
+      "kind": "syscall",
+      "name": "brk",
+      "state": "SUPPORTED_PROVEN",
+      "evidence": "Step 16 unchanged static-musl production path"
+    },
+    {
+      "id": "syscall.mmap",
+      "kind": "syscall",
+      "name": "mmap",
+      "state": "SUPPORTED_PROVEN",
+      "evidence": "Step 16 unchanged static-musl production path"
+    },
+    {
+      "id": "syscall.munmap",
+      "kind": "syscall",
+      "name": "munmap",
+      "state": "SUPPORTED_PROVEN",
+      "evidence": "Step 15/16 unchanged static-musl production path"
+    },
+    {
+      "id": "syscall.clock_gettime",
+      "kind": "syscall",
+      "name": "clock_gettime",
+      "state": "SUPPORTED_PROVEN",
+      "evidence": "Step 15/16 unchanged static-musl production path"
+    },
+    {
+      "id": "syscall.futex",
+      "kind": "syscall",
+      "name": "futex",
+      "state": "PARTIAL",
+      "evidence": "Step 15/16 proves the private WAIT/WAKE subset required by the accepted pthread fixture",
+      "note": "Broader Debian futex operations remain requirement-driven."
+    },
+    {
+      "id": "syscall.clone",
+      "kind": "syscall",
+      "name": "clone",
+      "state": "PARTIAL",
+      "evidence": "Step 15/16 proves the minimum clone/TLS/clear-child-tid subset required by the accepted pthread fixture",
+      "note": "Fork/vfork/process-oriented clone semantics are not claimed."
+    },
+    {
+      "id": "syscall.rt_sigprocmask",
+      "kind": "syscall",
+      "name": "rt_sigprocmask",
+      "state": "ENOSYS_UNSUPPORTED",
+      "expected_errno": "ENOSYS",
+      "evidence": "Accepted Step 15/16 musl transcript tolerates ENOSYS; Debian requirement not yet traced."
+    },
+    {
+      "id": "feature.dynamic_pt_interp",
+      "kind": "elf",
+      "name": "PT_INTERP dynamic loader path",
+      "state": "PARTIAL",
+      "note": "Static Linux ELF execution is proven; the pinned Debian glibc PT_INTERP path is not yet implemented/proven."
+    },
+    {
+      "id": "feature.vfs_path_fd",
+      "kind": "vfs",
+      "name": "ordinary path and file-descriptor semantics",
+      "state": "PARTIAL",
+      "note": "Write-to-console exists, but ordinary Debian path/open/read/stat/dirfd semantics are not yet claimed."
+    },
+    {
+      "id": "feature.serial_console",
+      "kind": "device",
+      "name": "Linux console stdin/stdout/stderr",
+      "state": "PARTIAL",
+      "note": "Linux write output is proven; complete /dev/console and stdin semantics remain unproven."
+    },
+    {
+      "id": "feature.virtio_block",
+      "kind": "device",
+      "name": "VirtIO block storage",
+      "state": "ENOSYS_UNSUPPORTED",
+      "expected_errno": "ENODEV",
+      "note": "Required later by the Debian persistent-root path."
+    },
+    {
+      "id": "feature.virtio_net",
+      "kind": "device",
+      "name": "VirtIO network interface",
+      "state": "ENOSYS_UNSUPPORTED",
+      "expected_errno": "ENODEV",
+      "note": "Required later by the Debian networking path."
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+[package]
+name = "xtask"
+version = "0.1.0"
+default-run = "xtask"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[[bin]]
+name = "xtask"
+path = "src/main.rs"
+
+[dependencies]
+kernal-tsc-x86-64 = { path = "../kernel/tsc-x86_64" }
+
+[dev-dependencies]
+kernal-cache-aarch64 = { path = "../kernel/cache-aarch64" }
+kernal-cpio = { path = "../kernel/cpio" }
+kernal-linux-fd = { path = "../kernel/linux-fd" }
+kernal-linux-vfs = { path = "../kernel/linux-vfs" }
+kernal-user-entry-aarch64 = { path = "../kernel/user-entry-aarch64" }
+kernal-vm = { path = "../kernel/vm" }

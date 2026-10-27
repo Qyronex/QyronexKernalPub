@@ -1,0 +1,33 @@
+{
+  "schema": "kernal-step-scientific-endpoint-v1",
+  "step": 34,
+  "state": "DESIGN_CONTRACT",
+  "research_question": "Can Kernal reproduce the bounded Debian 13 ARM64 networking contract with measurable compatibility, performance and authority isolation?",
+  "claim_bindings": ["compat.debian13-arm64", "authority.capability-isolation", "performance.kernel-runtime"],
+  "metrics": [
+    {"name":"network_oracle_passed","type":"integer","unit":"cases"},
+    {"name":"network_oracle_total","type":"integer","unit":"cases"},
+    {"name":"af_unix_failures","type":"integer","unit":"cases"},
+    {"name":"dns_success_rate","type":"number","unit":"percent"},
+    {"name":"tcp_connect_success_rate","type":"number","unit":"percent"},
+    {"name":"udp_roundtrip_success_rate","type":"number","unit":"percent"},
+    {"name":"tcp_throughput_mbps","type":"number","unit":"Mbit/s"},
+    {"name":"tcp_rtt_p50_us","type":"number","unit":"microseconds"},
+    {"name":"tcp_rtt_p95_us","type":"number","unit":"microseconds"},
+    {"name":"tcp_rtt_p99_us","type":"number","unit":"microseconds"},
+    {"name":"malformed_netlink_acceptances","type":"integer","unit":"cases"},
+    {"name":"cross_namespace_or_authority_bypass_count","type":"integer","unit":"cases"},
+    {"name":"socket_resource_leak_count","type":"integer","unit":"objects"}
+  ],
+  "negative_controls": [
+    "malformed NETLINK_ROUTE inputs must fail boundedly",
+    "socket/network authority must not cross namespace or capability boundaries",
+    "failed or closed sockets must not leak FD/OFD or wakeup state"
+  ],
+  "hard_zero_metrics": ["malformed_netlink_acceptances", "cross_namespace_or_authority_bypass_count", "socket_resource_leak_count"],
+  "environment_fields": ["tested_commit", "architecture", "debian_target_id", "qemu_version", "qemu_profile_id", "toolchain", "fixture_hashes", "network_topology", "host_endpoint_identity"],
+  "baseline": {"kind":"pinned-debian13-arm64-linux", "required_for":["tcp_throughput_mbps", "tcp_rtt_p50_us", "tcp_rtt_p95_us", "tcp_rtt_p99_us", "network_oracle_passed", "network_oracle_total"]},
+  "repetition_policy": {"minimum_runs":30, "timing_metrics":"report distribution/variance with packet size, stream count and topology"},
+  "promotion_rule": {"to_measured":"exact-SHA QEMU evidence must cover the declared oracle, hard-zero negatives and performance profile", "to_replicated":"independent reproduction with the same pinned topology/profile is required"},
+  "raw_evidence_contract": {"format":"json", "path_template":"research/runtime/step34/<tested_commit>.json", "required_fields":["tested_commit", "environment", "metrics", "negative_controls", "raw_artifact_hash"]}
+}

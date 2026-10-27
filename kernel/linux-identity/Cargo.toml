@@ -1,0 +1,17 @@
+[package]
+name = "kernal-linux-identity"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+kernal-capability = { path = "../capability" }
+kernal-object = { path = "../object" }
+kernal-percpu = { path = "../percpu" }
+kernal-process = { path = "../process" }
+kernal-scheduler = { path = "../scheduler" }
+kernal-scheduler-smp = { path = "../scheduler-smp" }
+
+[lib]
+path = "src/lib.rs"

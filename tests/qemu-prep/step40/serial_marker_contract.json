@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "step": 40,
+  "profile_id": "kernal-debian13-arm64-qemu-fastpath-v1",
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "prefix": "KERNAL_STEP40",
+  "line_format": "KERNAL_STEP40|<check-id>|<PASS|FAIL|INFO>|<escaped-detail>",
+  "escaping": "detail is one physical UTF-8 line; replace literal newline/carriage-return/pipe with visible escaped forms before emitting",
+  "rules": [
+    "A PASS marker is evidence routing metadata, not proof by itself; the producing test must be tied to the exact frozen source SHA.",
+    "Duplicate PASS markers for one check are allowed only when the evidence bundle retains the producing boot index/context.",
+    "A FAIL marker for a required check invalidates the current Step40 candidate until the owning Step31-39 contract is fixed and a new exact candidate is frozen.",
+    "No kernel source may emit fake-success Step40 markers solely to satisfy the harness. Markers belong to test/composition evidence, not compatibility semantics."
+  ],
+  "serial_checks": [
+    {"id":"systemd-pid1","required":true},
+    {"id":"local-shell","required":true},
+    {"id":"dynamic-glibc","required":true},
+    {"id":"root-rw","required":true},
+    {"id":"pseudo-filesystems","required":true},
+    {"id":"loopback","required":true},
+    {"id":"virtio-network","required":true},
+    {"id":"dns","required":true},
+    {"id":"outbound-tcp","required":true},
+    {"id":"outbound-udp","required":true},
+    {"id":"systemctl-lifecycle","required":true},
+    {"id":"udev-selected-devices","required":true},
+    {"id":"dpkg-operation","required":true},
+    {"id":"apt-update","required":true},
+    {"id":"apt-install","required":true},
+    {"id":"reboot","required":true},
+    {"id":"poweroff","required":true},
+    {"id":"unsupported-explicit-failure","required":true},
+    {"id":"security-invariants","required":true}
+  ],
+  "host_checks": [
+    {"id":"host-reachable-tcp","required":true,"source":"host-side checker against QEMU hostfwd"}
+  ],
+  "aggregate_checks": [
+    {"id":"repeat-boots","required":true,"source":"Step40 repeat_boots records plus per-boot serial/host evidence"}
+  ]
+}

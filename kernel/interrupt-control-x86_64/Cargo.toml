@@ -1,0 +1,15 @@
+[package]
+name = "kernal-interrupt-control-x86-64"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+kernal-ioapic-x86-64 = { path = "../ioapic-x86_64" }
+kernal-kmap-x86-64 = { path = "../kmap-x86_64" }
+kernal-pic8259-x86-64 = { path = "../pic8259-x86_64" }
+kernal-topology = { path = "../topology" }

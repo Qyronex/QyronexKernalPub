@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "step": 33,
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "purpose": "Freeze the smallest mount/pseudo-fs/persistent-root behavior required before systemd/package-manager work.",
+  "image_policy": {
+    "base": "verified pinned Debian qcow2",
+    "writes": "disposable qcow2 overlay only",
+    "tool": "tools/qemu-prep/create_verified_overlay.py"
+  },
+  "reference_cases": [
+    {
+      "id": "root.block-read-write",
+      "operation": "mount selected persistent filesystem RW on overlay-backed VirtIO block device and create/read/remove marker file",
+      "required": true
+    },
+    {
+      "id": "root.transition",
+      "operation": "initramfs -> selected real root transition using normal mount/root handoff semantics",
+      "capture": ["old root identity", "new root identity", "cwd/root behavior", "open FDs across transition if target requires"],
+      "required": true
+    },
+    {
+      "id": "tmpfs.basic",
+      "operation": "mount tmpfs, create/write/read/rename/unlink file, unmount",
+      "required": true
+    },
+    {
+      "id": "proc.minimum",
+      "operation": "read /proc/self/status, /proc/filesystems and /proc/sys/kernel/cap_last_cap",
+      "rule": "values project canonical Process/filesystem/security owners; no fabricated registry",
+      "required": true
+    },
+    {
+      "id": "sys.minimum",
+      "operation": "traverse selected /sys paths required by systemd/udev feature probes",
+      "rule": "values project canonical device/cgroup owners; optional security filesystems must not fake enablement",
+      "required": true
+    },
+    {
+      "id": "devpts.mount",
+      "operation": "mount devpts and expose Step-32 PTY identities",
+      "required": true
+    },
+    {
+      "id": "mount.busy",
+      "operation": "attempt unmount with active reference/open resource as required by Linux semantics",
+      "capture": ["return_value", "errno", "resource lifetime"],
+      "required": true
+    },
+    {
+      "id": "fs.rename-durability-smoke",
+      "operation": "create -> write -> fsync -> rename -> directory sync -> reopen/read",
+      "required": true
+    },
+    {
+      "id": "fs.truncate-mmap-smoke",
+      "operation": "target-required truncate/mmap interaction baseline for later package-manager expansion",
+      "required": false,
+      "classification": "promote if Step-39 oracle proves mandatory"
+    },
+    {
+      "id": "fs.malformed-metadata",
+      "operation": "selected malformed filesystem metadata/image fixture",
+      "expected_class": "bounded failure/no kernel memory corruption/no arbitrary DMA",
+      "required": true
+    }
+  ],
+  "runtime_owner_rules": [
+    "one canonical block-service owner beneath filesystem policy",
+    "mount objects live under canonical VFS authority",
+    "proc/sys facts project canonical owners and do not create shadow process/device registries",
+    "devpts reuses Step-32 PTY generations",
+    "durability success cannot claim guarantees stronger than the selected filesystem implementation"
+  ]
+}

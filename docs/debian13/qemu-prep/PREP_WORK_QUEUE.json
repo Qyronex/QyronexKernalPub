@@ -1,0 +1,218 @@
+{
+  "schema_version": 3,
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "authority": "OWNER_PREPARATION_DOCTRINE.md",
+  "lane": "qemu-prep-parallel-program",
+  "wip_limit": 3,
+  "priority_rule": "Step-30 acceptance always preempts this queue. Future runtime dependencies never block conflict-free PREP. The control lane, Wave D (32-36) and Wave E (37-40) may run concurrently only inside their declared disjoint WRITE scopes. Runtime integration stays dependency ordered.",
+  "states": ["READY", "WAITING_PREP_RECONCILE", "WAITING_REFERENCE_RUN", "WAITING_RUNTIME_RELEASE", "DONE"],
+  "parallel_lanes": [
+    {
+      "lane": "qemu-boot-prep-wave",
+      "branch": "agent/qemu-prep-roadmap-arm64",
+      "role": "cross-step-control-and-validation",
+      "write_scope": ["QEMU_BOOT_PREP_INDEX.md", "PREP_MANIFEST_TEMPLATE.md", "docs/debian13/qemu-prep/*", "tools/qemu-prep/*", "tests/qemu-prep/*"]
+    },
+    {
+      "lane": "prep-wave-d-32-36",
+      "branch": "agent/prep-wave-d-32-36-arm64",
+      "role": "step32-36-prep-hardening",
+      "write_scope": ["docs/debian13/qemu-prep/step32/**", "docs/debian13/qemu-prep/step33/**", "docs/debian13/qemu-prep/step34/**", "docs/debian13/qemu-prep/step35/**", "docs/debian13/qemu-prep/step36/**", "tools/qemu-prep/step32/**", "tools/qemu-prep/step33/**", "tools/qemu-prep/step34/**", "tools/qemu-prep/step35/**", "tools/qemu-prep/step36/**", "tests/qemu-prep/step32/**", "tests/qemu-prep/step33/**", "tests/qemu-prep/step34/**", "tests/qemu-prep/step35/**", "tests/qemu-prep/step36/**"]
+    },
+    {
+      "lane": "prep-wave-e-37-40",
+      "branch": "agent/prep-wave-e-37-40-arm64",
+      "role": "step37-40-prep-hardening",
+      "write_scope": ["docs/debian13/qemu-prep/step37/**", "docs/debian13/qemu-prep/step38/**", "docs/debian13/qemu-prep/step39/**", "docs/debian13/qemu-prep/step40/**", "tools/qemu-prep/step37/**", "tools/qemu-prep/step38/**", "tools/qemu-prep/step39/**", "tools/qemu-prep/step40/**", "tests/qemu-prep/step37/**", "tests/qemu-prep/step38/**", "tests/qemu-prep/step39/**", "tests/qemu-prep/step40/**"]
+    }
+  ],
+  "items": [
+    {
+      "id": "QP00.validate-structure",
+      "priority": 1,
+      "step": 0,
+      "state": "READY",
+      "owner_lane": "qemu-boot-prep-wave",
+      "goal": "Run and record the complete host-side PREP structural gate on the reconciled control branch head.",
+      "dependencies": ["QP01.reconcile-main DONE"],
+      "allowed_write": ["QEMU_BOOT_PREP_INDEX.md", "PREP_MANIFEST_TEMPLATE.md", "docs/debian13/qemu-prep/*", "tools/qemu-prep/*", "tests/qemu-prep/*"],
+      "deliverables": ["metadata validator passes", "cross-reference validator passes", "expanded cases pass", "unit regression passes", "exact PREP head recorded"]
+    },
+    {
+      "id": "QP01.reconcile-main",
+      "priority": 2,
+      "step": 0,
+      "state": "DONE",
+      "owner_lane": "qemu-boot-prep-wave",
+      "goal": "Reconcile the historical qemu-prep branch against current main while preserving PREP-only artifacts and dropping stale governance drift from the branch diff.",
+      "dependencies": ["OWNER_PREPARATION_DOCTRINE.md and AGENT_TASKS v3 are on main"],
+      "allowed_write": ["branch reconciliation only", "QEMU_BOOT_PREP_INDEX.md", "PREP_MANIFEST_TEMPLATE.md", "docs/debian13/qemu-prep/*", "tools/qemu-prep/*", "tests/qemu-prep/*"],
+      "deliverables": ["current-main ancestry reconciled", "no production kernel/Cargo/xtask diff introduced", "governance files no longer owned by PREP branch", "PREP validators become the next gate"]
+    },
+    {
+      "id": "QPD.harden-32-36",
+      "priority": 3,
+      "step": 32,
+      "state": "READY",
+      "owner_lane": "prep-wave-d-32-36",
+      "goal": "Drive Steps 32-36 from staged design toward PREP_READY: complete requirement/dependency/owner/conflict/landing maps, deterministic fixtures, negative corpora, executable validators, acceptance manifests and runtime-only gap lists without touching production owners.",
+      "dependencies": ["Step 32-36 staged design snapshot exists"],
+      "allowed_write": ["docs/debian13/qemu-prep/step32/**", "docs/debian13/qemu-prep/step33/**", "docs/debian13/qemu-prep/step34/**", "docs/debian13/qemu-prep/step35/**", "docs/debian13/qemu-prep/step36/**", "tools/qemu-prep/step32/**", "tools/qemu-prep/step33/**", "tools/qemu-prep/step34/**", "tools/qemu-prep/step35/**", "tools/qemu-prep/step36/**", "tests/qemu-prep/step32/**", "tests/qemu-prep/step33/**", "tests/qemu-prep/step34/**", "tests/qemu-prep/step35/**", "tests/qemu-prep/step36/**"],
+      "deliverables": ["Step 32-36 PREP_READY checklist closure or explicit external-only blockers", "per-step validators", "negative/error corpora", "frozen handoff manifests", "no production-source diff"]
+    },
+    {
+      "id": "QPE.harden-37-40",
+      "priority": 4,
+      "step": 37,
+      "state": "READY",
+      "owner_lane": "prep-wave-e-37-40",
+      "goal": "Drive Steps 37-40 from staged design toward PREP_READY: complete PID1/udev/package/final-acceptance contracts, fixtures, negative corpora, executable validators, exact evidence schemas and runtime-only gap lists without touching production owners.",
+      "dependencies": ["Step 37-40 staged design snapshot exists"],
+      "allowed_write": ["docs/debian13/qemu-prep/step37/**", "docs/debian13/qemu-prep/step38/**", "docs/debian13/qemu-prep/step39/**", "docs/debian13/qemu-prep/step40/**", "tools/qemu-prep/step37/**", "tools/qemu-prep/step38/**", "tools/qemu-prep/step39/**", "tools/qemu-prep/step40/**", "tests/qemu-prep/step37/**", "tests/qemu-prep/step38/**", "tests/qemu-prep/step39/**", "tests/qemu-prep/step40/**"],
+      "deliverables": ["Step 37-40 PREP_READY checklist closure or explicit external-only blockers", "per-step validators", "failure classifiers", "frozen handoff manifests", "final Step-40 exact-SHA evidence contract", "no production-source diff"]
+    },
+    {
+      "id": "QP31.sync-canonical-prep",
+      "priority": 10,
+      "step": 31,
+      "state": "WAITING_RUNTIME_RELEASE",
+      "owner_lane": "qemu-boot-prep-wave",
+      "goal": "Index the final outputs of the three canonical Step-31 PREP lanes without duplicating their source work.",
+      "dependencies": ["accepted Step 30.7 for runtime reconciliation"],
+      "allowed_write": ["cross-step control metadata only until Step 30.7 acceptance"],
+      "deliverables": ["exact prep SHAs", "artifact paths", "staleness check", "final Step-31 integration handoff"]
+    },
+    {
+      "id": "QP32.tty-reference-fixtures",
+      "priority": 20,
+      "step": 32,
+      "state": "DONE",
+      "owner_lane": "prep-wave-d-32-36",
+      "goal": "Prepare exact console/TTY/PTTY reference scenarios and ioctl vectors.",
+      "dependencies": ["reconciled PREP branch"],
+      "allowed_write": ["docs/debian13/qemu-prep/step32/**", "tools/qemu-prep/step32/**", "tests/qemu-prep/step32/**"],
+      "deliverables": ["TCGETS/TIOCGWINSZ fixtures", "termios flag corpus", "PTY lifecycle cases", "job-control expected outcomes"]
+    },
+    {
+      "id": "QP33.virtio-mmio-discovery-fixtures",
+      "priority": 21,
+      "step": 33,
+      "state": "DONE",
+      "owner_lane": "prep-wave-d-32-36",
+      "goal": "Prepare the preferred QEMU virtio-mmio block transport inputs without touching runtime FDT/device source.",
+      "dependencies": ["reconciled PREP branch"],
+      "allowed_write": ["docs/debian13/qemu-prep/step33/**", "tools/qemu-prep/step33/**", "tests/qemu-prep/step33/**"],
+      "deliverables": ["expected QEMU FDT device profile", "MMIO/IRQ validation vectors", "virtqueue malformed cases", "feature-negotiation corpus", "VirtIO PCI fallback trigger criteria"]
+    },
+    {
+      "id": "QP33.rw-root-fixtures",
+      "priority": 22,
+      "step": 33,
+      "state": "DONE",
+      "owner_lane": "prep-wave-d-32-36",
+      "goal": "Prepare deterministic copy-on-write rootfs and filesystem/durability scenarios.",
+      "dependencies": ["reconciled PREP branch"],
+      "allowed_write": ["docs/debian13/qemu-prep/step33/**", "tools/qemu-prep/step33/**", "tests/qemu-prep/step33/**"],
+      "deliverables": ["overlay policy", "root-switch scenario", "tmpfs/procfs/sysfs/devpts probes", "rename/truncate/fsync/fdatasync/syncfs corpus"]
+    },
+    {
+      "id": "QP34.network-reference-fixtures",
+      "priority": 23,
+      "step": 34,
+      "state": "DONE",
+      "owner_lane": "prep-wave-d-32-36",
+      "goal": "Prepare deterministic AF_UNIX/NETLINK_ROUTE/DNS/TCP/UDP scenarios.",
+      "dependencies": ["reconciled PREP branch"],
+      "allowed_write": ["docs/debian13/qemu-prep/step34/**", "tools/qemu-prep/step34/**", "tests/qemu-prep/step34/**"],
+      "deliverables": ["loopback/netlink corpus", "AF_UNIX cases", "local DNS fixture design", "TCP/UDP client/server cases", "QEMU user-network host-forward profile"]
+    },
+    {
+      "id": "QP35.event-fd-fixtures",
+      "priority": 24,
+      "step": 35,
+      "state": "DONE",
+      "owner_lane": "prep-wave-d-32-36",
+      "goal": "Prepare reference fixtures for event-descriptor semantics required by systemd/dbus.",
+      "dependencies": ["reconciled PREP branch"],
+      "allowed_write": ["docs/debian13/qemu-prep/step35/**", "tools/qemu-prep/step35/**", "tests/qemu-prep/step35/**"],
+      "deliverables": ["epoll level/edge/oneshot cases", "eventfd", "timerfd", "signalfd", "inotify", "memfd seals", "pidfd if observed", "close_range"]
+    },
+    {
+      "id": "QP36.systemd-feature-oracle",
+      "priority": 25,
+      "step": 36,
+      "state": "DONE",
+      "owner_lane": "prep-wave-d-32-36",
+      "goal": "Prepare systemd cgroup/namespace/rlimit/security feature classification.",
+      "dependencies": ["reconciled PREP branch"],
+      "allowed_write": ["docs/debian13/qemu-prep/step36/**", "tools/qemu-prep/step36/**", "tests/qemu-prep/step36/**"],
+      "deliverables": ["cgroup-v2 controller matrix", "rlimit cases", "namespace requirement matrix", "capability/securebits view", "unsupported security fallback matrix"]
+    },
+    {
+      "id": "QP37.pid1-boot-classifier",
+      "priority": 26,
+      "step": 37,
+      "state": "DONE",
+      "owner_lane": "prep-wave-e-37-40",
+      "goal": "Prepare deterministic classification of the first mandatory systemd PID1 boot failure.",
+      "dependencies": ["reconciled PREP branch"],
+      "allowed_write": ["docs/debian13/qemu-prep/step37/**", "tools/qemu-prep/step37/**", "tests/qemu-prep/step37/**"],
+      "deliverables": ["boot marker schema", "failure-owner classifier", "three-service lifecycle scenario", "reboot/poweroff expected markers"]
+    },
+    {
+      "id": "QP38.udev-device-corpus",
+      "priority": 27,
+      "step": 38,
+      "state": "DONE",
+      "owner_lane": "prep-wave-e-37-40",
+      "goal": "Prepare normal udev visibility and lifecycle cases for the selected console/block/NIC set.",
+      "dependencies": ["reconciled PREP branch"],
+      "allowed_write": ["docs/debian13/qemu-prep/step38/**", "tools/qemu-prep/step38/**", "tests/qemu-prep/step38/**"],
+      "deliverables": ["sysfs identity expectations", "uevent cases", "device-node mapping", "add/remove stale-authority negatives"]
+    },
+    {
+      "id": "QP39.package-transaction-corpus",
+      "priority": 28,
+      "step": 39,
+      "state": "DONE",
+      "owner_lane": "prep-wave-e-37-40",
+      "goal": "Prepare real dpkg/apt transaction oracles on disposable overlays.",
+      "dependencies": ["reconciled PREP branch"],
+      "allowed_write": ["docs/debian13/qemu-prep/step39/**", "tools/qemu-prep/step39/**", "tests/qemu-prep/step39/**"],
+      "deliverables": ["exact package pin helper", "dpkg configure case", "apt update case", "install/remove case", "lock/durability/failure-injection expectations"]
+    },
+    {
+      "id": "QP40.final-acceptance-bundle",
+      "priority": 29,
+      "step": 40,
+      "state": "DONE",
+      "owner_lane": "prep-wave-e-37-40",
+      "goal": "Prepare the final exact-SHA product harness contract without implementing missing runtime semantics.",
+      "dependencies": ["reconciled PREP branch"],
+      "allowed_write": ["docs/debian13/qemu-prep/step40/**", "tools/qemu-prep/step40/**", "tests/qemu-prep/step40/**"],
+      "deliverables": ["complete QEMU argv contract", "machine-readable serial markers", "systemctl/dpkg/apt/TCP checks", "reboot/poweroff checks", "three-boot consistency checks", "final evidence schema"]
+    },
+    {
+      "id": "QPD.reference-32-36",
+      "priority": 40,
+      "step": 32,
+      "state": "WAITING_REFERENCE_RUN",
+      "owner_lane": "prep-wave-d-32-36",
+      "goal": "Execute and review staged Step 32-36 scenarios inside the verified pinned Debian ARM64 reference guest when the canonical oracle runner is available.",
+      "dependencies": ["QP00.validate-structure DONE", "authorized canonical oracle handoff", "Apple-Silicon reference runner available"],
+      "allowed_write": ["Step 32-36 PREP evidence destinations released by the oracle/integrator"],
+      "deliverables": ["exact source-bound reference outcomes", "normalized Step 32-36 requirements", "reviewed classifications", "handoff updates"]
+    },
+    {
+      "id": "QPE.reference-37-40",
+      "priority": 41,
+      "step": 37,
+      "state": "WAITING_REFERENCE_RUN",
+      "owner_lane": "prep-wave-e-37-40",
+      "goal": "Execute and review staged Step 37-40 scenarios inside the verified pinned Debian ARM64 reference guest when the canonical oracle runner is available.",
+      "dependencies": ["QP00.validate-structure DONE", "authorized canonical oracle handoff", "Apple-Silicon reference runner available"],
+      "allowed_write": ["Step 37-40 PREP evidence destinations released by the oracle/integrator"],
+      "deliverables": ["exact source-bound reference outcomes", "normalized Step 37-40 requirements", "reviewed classifications", "handoff updates"]
+    }
+  ]
+}

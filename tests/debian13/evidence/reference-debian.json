@@ -1,0 +1,211 @@
+{
+  "cases": [
+    {
+      "id": "component.busybox.help",
+      "outcome": {
+        "errno": null,
+        "exit_status": 0,
+        "file_metadata": null,
+        "return_value": null,
+        "signal": null,
+        "socket_behavior": null,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "78dfbf4371d035c51f113c897a1a2af83a951e0ce88a7cd830b305fe175664be"
+      }
+    },
+    {
+      "id": "functional.busybox.proc-status",
+      "outcome": {
+        "errno": null,
+        "exit_status": 0,
+        "file_metadata": null,
+        "return_value": null,
+        "signal": null,
+        "socket_behavior": null,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "id": "functional.busybox.sys-root",
+      "outcome": {
+        "errno": null,
+        "exit_status": 0,
+        "file_metadata": null,
+        "return_value": null,
+        "signal": null,
+        "socket_behavior": null,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "id": "functional.busybox.dev-null",
+      "outcome": {
+        "errno": null,
+        "exit_status": 0,
+        "file_metadata": null,
+        "return_value": null,
+        "signal": null,
+        "socket_behavior": null,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "id": "functional.busybox.filesystem-path",
+      "outcome": {
+        "errno": null,
+        "exit_status": 0,
+        "file_metadata": null,
+        "return_value": null,
+        "signal": null,
+        "socket_behavior": null,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "id": "functional.busybox.tty-ioctl",
+      "outcome": {
+        "errno": null,
+        "exit_status": 1,
+        "file_metadata": null,
+        "return_value": null,
+        "signal": null,
+        "socket_behavior": null,
+        "stderr_sha256": "299aec8773278fdf38f6c1d140c58e145bd02ddef36b6106077de4fcc045d1a0",
+        "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "id": "component.glibc-loader.help",
+      "outcome": {
+        "errno": null,
+        "exit_status": 0,
+        "file_metadata": null,
+        "return_value": null,
+        "signal": null,
+        "socket_behavior": null,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "14d0ce2867bb7d2bd7298b8a2464ce89f287ca9d8489dbe4ae4f5f689372d45e"
+      }
+    },
+    {
+      "id": "component.bin-sh.printf",
+      "outcome": {
+        "errno": null,
+        "exit_status": 0,
+        "file_metadata": null,
+        "return_value": null,
+        "signal": null,
+        "socket_behavior": null,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "10a1fca7df188a102ee0c1a3bb39a7d514c5f17c1810490af3e0c3f34216ec2a"
+      }
+    },
+    {
+      "id": "component.systemd.version",
+      "outcome": {
+        "errno": null,
+        "exit_status": 0,
+        "file_metadata": null,
+        "return_value": null,
+        "signal": null,
+        "socket_behavior": null,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "8a25c9a782ed24936452bc49aa444ed6b08c780e4fe495052071700ddc6c5449"
+      }
+    },
+    {
+      "id": "component.udev.version",
+      "outcome": {
+        "errno": null,
+        "exit_status": 0,
+        "file_metadata": null,
+        "return_value": null,
+        "signal": null,
+        "socket_behavior": null,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "070007b0b8bcccbb26c73f48b7f78ae9248b2a2470a14f077abfa6b645b9a560"
+      }
+    },
+    {
+      "id": "component.dbus.version",
+      "outcome": {
+        "errno": null,
+        "exit_status": 0,
+        "file_metadata": null,
+        "return_value": null,
+        "signal": null,
+        "socket_behavior": null,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "c3e9970010f1b30da2fbf53a0461b2cb7c2ee54a2986e4d4248614e6a488d751"
+      }
+    },
+    {
+      "id": "component.iproute2.version",
+      "outcome": {
+        "errno": null,
+        "exit_status": 0,
+        "file_metadata": null,
+        "return_value": null,
+        "signal": null,
+        "socket_behavior": null,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "35f698d0f80635de8570c5faa8c42dcbbd8e82f06463b068f5e8632e4b75f43d"
+      }
+    },
+    {
+      "id": "functional.iproute2.link-loopback",
+      "outcome": {
+        "errno": null,
+        "exit_status": 0,
+        "file_metadata": null,
+        "return_value": null,
+        "signal": null,
+        "socket_behavior": null,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "4afb245c482c9e8603cdc29aa5b91c7ed9499f765b63fcd45f523d5bc13378d5"
+      }
+    },
+    {
+      "id": "component.dpkg.version",
+      "outcome": {
+        "errno": null,
+        "exit_status": 0,
+        "file_metadata": null,
+        "return_value": null,
+        "signal": null,
+        "socket_behavior": null,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "9c40cc14d52bf124eddab66fe9f04bb493be792edd90af4ee9e91441747f4880"
+      }
+    },
+    {
+      "id": "component.apt.version",
+      "outcome": {
+        "errno": null,
+        "exit_status": 0,
+        "file_metadata": null,
+        "return_value": null,
+        "signal": null,
+        "socket_behavior": null,
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "stdout_sha256": "f320396cc22048261f3582344dce0cca19dd36e8972fb2b5e122aa754103f8b0"
+      }
+    }
+  ],
+  "environment": "reference-debian",
+  "provenance": {
+    "rootfs": {
+      "artifact": "debian-13-generic-arm64-20260712-2537.qcow2",
+      "sha256": "7e556159a995fa4634e2ea52228ec7a4226193e2d1a87e2c7158e4c6d53ed5fe",
+      "sha512": "3be884e19878b307a5916eb59be17efb7f1a5ec8290f2253345640f0a8740082fd40cfb7a7940b56cca0a76289ecd448507011cfd1b17472c9998d90f44b5c2c",
+      "size_bytes": 431882240
+    },
+    "source_commit": "132f20fe09ac5665c4444054a6526288a0328f34"
+  },
+  "schema_version": 1,
+  "target_id": "debian-13-trixie-arm64-20260712-2537"
+}

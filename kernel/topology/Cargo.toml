@@ -1,0 +1,13 @@
+[package]
+name = "kernal-topology"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+kernal-acpi = { path = "../../firmware/acpi" }
+kernal-acpi-srat = { path = "../../firmware/acpi-srat" }

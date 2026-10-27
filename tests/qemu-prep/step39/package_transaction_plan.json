@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "step": 39,
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "purpose": "Prepare real package-manager reference and acceptance transactions without guessing durability semantics or mutating the pinned base image.",
+  "image_policy": {
+    "base": "verified pinned Debian qcow2 from docs/debian13/arm64-target.json",
+    "write": "ephemeral qcow2 overlay only",
+    "reset_between_failure_cases": true
+  },
+  "package_selection": {
+    "candidate": "hello",
+    "state": "VERSION_AND_HASH_MUST_BE_PINNED_FROM_SELECTED_SNAPSHOT",
+    "rule": "Do not call the transaction corpus PREP_READY until exact package version, architecture and repository object/hash are recorded."
+  },
+  "transactions": [
+    {
+      "id": "dpkg.configure",
+      "command": ["/usr/bin/dpkg", "--configure", "-a"],
+      "capture": ["file locks", "directory traversal", "rename/link/unlink", "metadata", "fsync-family", "exit status", "dpkg database consistency"],
+      "required": true
+    },
+    {
+      "id": "apt.update",
+      "command": ["/usr/bin/apt-get", "update"],
+      "capture": ["locks", "DNS", "TCP", "time", "entropy", "temporary files", "rename", "fsync-family", "exit status"],
+      "required": true
+    },
+    {
+      "id": "apt.install",
+      "command_template": ["/usr/bin/apt-get", "install", "-y", "<PINNED_PACKAGE=VERSION>"],
+      "capture": ["download transport", "dpkg invocation", "locks", "mmap/truncate", "ownership/mode/timestamps", "xattr/ACL if observed", "fsync-family", "exit status"],
+      "required": true
+    },
+    {
+      "id": "apt.remove",
+      "command_template": ["/usr/bin/apt-get", "remove", "-y", "<PINNED_PACKAGE>"],
+      "capture": ["dpkg database mutations", "unlink/rename", "directory metadata", "fsync-family", "exit status"],
+      "required": true
+    }
+  ],
+  "failure_injection": [
+    {
+      "id": "kill-before-final-rename",
+      "goal": "Document actual selected-filesystem guarantee; never claim stronger atomicity than provided."
+    },
+    {
+      "id": "kill-after-rename-before-directory-sync",
+      "goal": "Measure reference behavior and selected-filesystem durability boundary."
+    },
+    {
+      "id": "lock-contention",
+      "goal": "Second package-manager process must observe reference-compatible lock failure/wait behavior."
+    },
+    {
+      "id": "short-or-failed-write",
+      "goal": "Failure must not turn into silent package database success."
+    }
+  ],
+  "runtime_owner_rules": [
+    "file/advisory locks attach to canonical OFD/process identities",
+    "durability calls report only guarantees the selected persistent filesystem actually provides",
+    "Step-30 exec and Step-31 interpreter/shebang paths are reused",
+    "network/time/entropy come from accepted canonical owners",
+    "no package-name-specific kernel behavior"
+  ]
+}

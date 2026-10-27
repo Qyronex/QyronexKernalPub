@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "distribution": "Debian",
+  "release": "13",
+  "codename": "trixie",
+  "architecture": "arm64",
+  "rootfs": {
+    "format": "qcow2",
+    "artifact": "debian-13-generic-arm64-20260712-2537.qcow2",
+    "immutable_url": "https://cloud.debian.org/images/cloud/trixie/20260712-2537/debian-13-generic-arm64-20260712-2537.qcow2",
+    "sha512_manifest_url": "https://cloud.debian.org/images/cloud/trixie/20260712-2537/SHA512SUMS",
+    "size_bytes": 431882240,
+    "sha512": "3be884e19878b307a5916eb59be17efb7f1a5ec8290f2253345640f0a8740082fd40cfb7a7940b56cca0a76289ecd448507011cfd1b17472c9998d90f44b5c2c",
+    "sha256": "7e556159a995fa4634e2ea52228ec7a4226193e2d1a87e2c7158e4c6d53ed5fe",
+    "sha256_provenance": "independently_derived_from_sha512_verified_artifact"
+  },
+  "repositories": [
+    {
+      "name": "debian",
+      "snapshot": "20260712T000000Z",
+      "suite": "trixie",
+      "components": ["main"],
+      "base_url": "https://snapshot.debian.org/archive/debian/20260712T000000Z/",
+      "release_metadata": "dists/trixie/InRelease",
+      "check_valid_until": false
+    },
+    {
+      "name": "debian-security",
+      "snapshot": "20260712T000000Z",
+      "suite": "trixie-security",
+      "components": ["main"],
+      "base_url": "https://snapshot.debian.org/archive/debian-security/20260712T000000Z/",
+      "release_metadata": "dists/trixie-security/InRelease",
+      "check_valid_until": false
+    }
+  ],
+  "integrity_policy": {
+    "rootfs": "published_sha512_plus_pinned_sha256_and_local_size_dual_hashes_must_match_before_use",
+    "repository_metadata": "require_signed_inrelease_from_exact_snapshot_url",
+    "allow_latest_urls": false,
+    "allow_unhashed_rootfs": false,
+    "allow_kernal_patched_debian_binaries": false
+  },
+  "provenance": {
+    "pin_date": "2026-09-03",
+    "cloud_build": "20260712-2537",
+    "note": "The cloud image is an immutable dated Debian 13 ARM64 artifact. Debian's versioned SHA512SUMS entry must match the pinned SHA-512 before use; the independently derived pinned SHA-256 and exact byte size are then rechecked locally as additional integrity constraints. Repository URLs use exact snapshot timestamps; changing image, hash or repository timestamp requires a new target_id."
+  }
+}

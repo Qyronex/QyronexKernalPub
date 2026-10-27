@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "step": 35,
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "purpose": "Freeze the minimum modern Linux descriptor/event behavior required before systemd/dbus integration.",
+  "reference_cases": [
+    {
+      "id": "epoll.level",
+      "operation": "pipe/readiness source registered level-triggered; unread data remains visible across waits",
+      "capture": ["epoll_create1", "epoll_ctl", "epoll_wait", "close/reuse behavior"],
+      "required": true
+    },
+    {
+      "id": "epoll.edge",
+      "operation": "edge-triggered readiness emits transition behavior required by reference Linux",
+      "capture": ["EPOLLET behavior", "drain/rearm sequence"],
+      "required": true
+    },
+    {
+      "id": "epoll.oneshot",
+      "operation": "EPOLLONESHOT disables after delivery and rearms only through ctl MOD",
+      "required": true
+    },
+    {
+      "id": "epoll.fd-reuse",
+      "operation": "close watched fd, reuse scalar fd number, prove old registration cannot attach to replacement generation",
+      "expected_class": "generation-safe behavior",
+      "required": true
+    },
+    {
+      "id": "eventfd.counter",
+      "operation": "write/read eventfd counter, nonblocking empty read and overflow boundary",
+      "capture": ["counter values", "errno", "epoll readiness"],
+      "required": true
+    },
+    {
+      "id": "timerfd.expiration",
+      "operation": "arm monotonic timerfd, observe expiration count and epoll readiness",
+      "capture": ["clock id", "settime/gettime", "expiration count", "nonblocking behavior"],
+      "required": true
+    },
+    {
+      "id": "signalfd.masked-delivery",
+      "operation": "block selected signal, receive it through signalfd, verify canonical signal queue consumption",
+      "capture": ["signal mask", "signalfd record", "queue state after read"],
+      "required": true
+    },
+    {
+      "id": "inotify.mutation",
+      "operation": "watch directory, create/rename/delete one file, capture exact event order/masks used by pinned target",
+      "required": true
+    },
+    {
+      "id": "memfd.seals",
+      "operation": "create memfd and exercise only seals observed as required by pinned target",
+      "required": true
+    },
+    {
+      "id": "pidfd.lifecycle",
+      "operation": "bind pidfd to exact process generation and verify post-exit/reuse behavior",
+      "required": false,
+      "classification": "promote only if deeper pinned systemd corpus observes mandatory pidfd operations"
+    },
+    {
+      "id": "close-range",
+      "operation": "close_range subset already surfaced by dbus reference evidence",
+      "required": true,
+      "source": "tests/debian13/evidence/reference-syscalls.json"
+    }
+  ],
+  "runtime_owner_rules": [
+    "one pollable/readiness-source contract shared by FD-backed objects",
+    "epoll registrations bind generation-safe descriptor/object identities",
+    "timerfd composes canonical time/scheduler owners and creates no second timer wheel",
+    "signalfd consumes canonical signal state and creates no shadow signal queue",
+    "inotify consumes canonical VFS mutation events and creates no shadow filesystem",
+    "pidfd never treats scalar PID as authority"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "package": "busybox-static",
+  "version": "1:1.37.0-6+b8",
+  "architecture": "arm64",
+  "artifact": "busybox-static_1.37.0-6+b8_arm64.deb",
+  "immutable_url": "https://snapshot.debian.org/archive/debian/20260712T000000Z/pool/main/b/busybox/busybox-static_1.37.0-6+b8_arm64.deb",
+  "size_bytes": 847136,
+  "sha256": "6d144e5012d47ec3a6f2102ba6fac644ad34c989373fed30c1bb7264f5cd3616",
+  "package_member": "usr/bin/busybox",
+  "initramfs_path": "bin/busybox",
+  "proof_argv0": "true",
+  "qemu_guest_address": "0x48000000"
+}

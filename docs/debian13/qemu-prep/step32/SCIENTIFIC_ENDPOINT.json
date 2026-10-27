@@ -1,0 +1,30 @@
+{
+  "schema": "kernal-step-scientific-endpoint-v1",
+  "step": 32,
+  "state": "DESIGN_CONTRACT",
+  "research_question": "Does Kernal reproduce the observable TTY/PTTY and job-control contract required by unchanged Debian 13 ARM64 without broadening device authority?",
+  "claim_bindings": ["compat.debian13-arm64", "authority.capability-isolation", "performance.kernel-runtime"],
+  "metrics": [
+    {"name":"tty_oracle_passed","type":"integer","unit":"cases"},
+    {"name":"tty_oracle_total","type":"integer","unit":"cases"},
+    {"name":"ioctl_semantic_divergences","type":"integer","unit":"cases"},
+    {"name":"pty_roundtrip_p50_us","type":"number","unit":"microseconds"},
+    {"name":"pty_roundtrip_p95_us","type":"number","unit":"microseconds"},
+    {"name":"pty_roundtrip_p99_us","type":"number","unit":"microseconds"},
+    {"name":"pty_throughput_mib_s","type":"number","unit":"MiB/s"},
+    {"name":"job_control_failures","type":"integer","unit":"cases"},
+    {"name":"unauthorized_device_access_successes","type":"integer","unit":"cases"},
+    {"name":"stale_session_or_foreground_group_acceptances","type":"integer","unit":"cases"}
+  ],
+  "negative_controls": [
+    "foreign or unowned TTY/device authority must be rejected",
+    "stale PTY/session/foreground-process-group generations must be rejected",
+    "invalid ioctl and bad user pointers must fail explicitly rather than fake success"
+  ],
+  "hard_zero_metrics": ["unauthorized_device_access_successes", "stale_session_or_foreground_group_acceptances"],
+  "environment_fields": ["tested_commit", "architecture", "debian_target_id", "qemu_version", "qemu_profile_id", "toolchain", "fixture_hashes"],
+  "baseline": {"kind":"pinned-debian13-arm64-linux", "required_for":["ioctl_semantic_divergences", "pty_roundtrip_p50_us", "pty_roundtrip_p95_us", "pty_roundtrip_p99_us", "pty_throughput_mib_s"]},
+  "repetition_policy": {"minimum_runs":30, "timing_metrics":"report distribution and variance; never publish a single-run latency claim"},
+  "promotion_rule": {"to_measured":"all declared metrics must come from executed evidence tied to one exact tested commit; hard-zero metrics must be zero", "to_replicated":"independent reproduction of the same pinned profile and evidence contract is required"},
+  "raw_evidence_contract": {"format":"json", "path_template":"research/runtime/step32/<tested_commit>.json", "required_fields":["tested_commit", "environment", "metrics", "negative_controls", "raw_artifact_hash"]}
+}

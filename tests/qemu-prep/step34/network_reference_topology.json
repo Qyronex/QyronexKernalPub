@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "step": 34,
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "profile": "qemu-user-net-local-fixtures-v1",
+  "status": "PREP_ONLY_RUNTIME_PROOF_REQUIRED",
+  "qemu": {
+    "preferred_device": "virtio-net-device",
+    "preferred_transport": "virtio-mmio",
+    "fallback_device": "virtio-net-pci",
+    "backend": "user",
+    "default_guest_network": "10.0.2.0/24",
+    "guest_visible_host": "10.0.2.2",
+    "guest_visible_dns": "10.0.2.3",
+    "guest_to_host_test_endpoints": {
+      "tcp": {"guest_target_host": "10.0.2.2", "guest_target_port": 18081, "host_listener_bind": "127.0.0.1", "host_listener_port": 18081},
+      "udp": {"guest_target_host": "10.0.2.2", "guest_target_port": 18082, "host_listener_bind": "127.0.0.1", "host_listener_port": 18082}
+    },
+    "host_to_guest_forward": {"host": "127.0.0.1", "host_port": 18080, "guest_port": 8080},
+    "documentation_basis": "QEMU user networking exposes the host at x.x.x.2 and virtual DNS at x.x.x.3 by default; hostfwd redirects incoming host connections to guest endpoints."
+  },
+  "reference_cases": [
+    {
+      "id": "net.loopback-netlink",
+      "command": ["/usr/sbin/ip", "link", "show", "lo"],
+      "already_observed": ["AF_NETLINK", "SOCK_RAW|SOCK_CLOEXEC", "NETLINK_ROUTE", "bind", "getsockname", "sendmsg", "recvmsg", "setsockopt"],
+      "required": true
+    },
+    {
+      "id": "net.af-unix-stream",
+      "kind": "small_fixture",
+      "operation": "pathname AF_UNIX stream server/client exchange with close/reuse negative case",
+      "capture": ["socket", "bind", "listen", "accept", "connect", "send", "recv", "shutdown", "close"],
+      "required": true
+    },
+    {
+      "id": "net.af-unix-dgram",
+      "kind": "small_fixture",
+      "operation": "AF_UNIX datagram send/recv for target-required subset",
+      "required": false,
+      "classification": "promote to required only if pinned corpus proves mandatory"
+    },
+    {
+      "id": "net.dns",
+      "kind": "reference_guest",
+      "operation": "resolve deterministic fixture name using unchanged glibc resolver; use the QEMU virtual DNS path or an explicitly recorded local DNS fixture, never silently depend on ambient public DNS for acceptance",
+      "capture": ["/etc/resolv.conf reads", "socket calls", "UDP DNS", "TCP DNS fallback if observed", "result/errno", "exact DNS fixture/source"],
+      "required": true
+    },
+    {
+      "id": "net.tcp-outbound",
+      "kind": "reference_guest",
+      "operation": "guest connects to 10.0.2.2:18081; host-local deterministic TCP endpoint replies KERNAL_TCP_OK",
+      "capture": ["connect", "send/recv", "socket options", "nonblocking behavior if observed"],
+      "required": true
+    },
+    {
+      "id": "net.udp-outbound",
+      "kind": "reference_guest",
+      "operation": "guest sends to 10.0.2.2:18082; host-local deterministic UDP endpoint replies with KERNAL_UDP_OK prefix",
+      "capture": ["sendto/sendmsg", "recvfrom/recvmsg", "timeout behavior"],
+      "required": true
+    },
+    {
+      "id": "net.host-reachable-server",
+      "kind": "step40-consumer",
+      "operation": "guest listens on TCP/8080; host reaches 127.0.0.1:18080 through QEMU hostfwd",
+      "required": true
+    },
+    {
+      "id": "net.malformed-netlink",
+      "kind": "small_fixture",
+      "operation": "truncated/oversized/unknown NETLINK_ROUTE messages",
+      "expected_class": "bounded Linux-compatible error/no kernel panic",
+      "required": true
+    }
+  ],
+  "runtime_owner_rules": [
+    "one architecture-neutral packet/network owner",
+    "one Linux socket semantics owner integrated with kernel/linux-fd",
+    "pathname AF_UNIX composes kernel/linux-vfs authority",
+    "DNS remains ordinary userspace resolver behavior over files + UDP/TCP",
+    "NIC transport owns queues, not IP/socket policy",
+    "stale socket/device generations cannot redirect old authority to replacement objects"
+  ]
+}

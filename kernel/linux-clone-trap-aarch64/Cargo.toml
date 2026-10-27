@@ -1,0 +1,26 @@
+[package]
+name = "kernal-linux-clone-trap-aarch64"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+kernal-capability = { path = "../capability" }
+kernal-exceptions-aarch64 = { path = "../exceptions-aarch64" }
+kernal-linux-abi = { path = "../../abi/linux" }
+kernal-linux-clone = { path = "../linux-clone" }
+kernal-linux-clone-aarch64 = { path = "../linux-clone-aarch64" }
+kernal-linux-clone-runtime-aarch64 = { path = "../linux-clone-runtime-aarch64" }
+kernal-linux-clone-usercopy-aarch64 = { path = "../linux-clone-usercopy-aarch64" }
+kernal-linux-exit-lifecycle = { path = "../linux-exit-lifecycle" }
+kernal-linux-identity = { path = "../linux-identity" }
+kernal-object = { path = "../object" }
+kernal-percpu = { path = "../percpu" }
+kernal-process = { path = "../process" }
+kernal-process-aarch64 = { path = "../process-aarch64" }
+kernal-scheduler = { path = "../scheduler" }
+kernal-scheduler-cpu = { path = "../scheduler-cpu" }
+kernal-scheduler-smp = { path = "../scheduler-smp" }
+kernal-syscall-entry-aarch64 = { path = "../syscall-entry-aarch64" }
+kernal-thread-context = { path = "../thread-context" }

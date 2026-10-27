@@ -1,0 +1,91 @@
+[package]
+name = "kernal-protected-boot-aarch64"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+kernal-address-space-aarch64 = { path = "../address-space-aarch64", optional = true }
+kernal-arch-aarch64 = { path = "../arch-aarch64" }
+kernal-cache-aarch64 = { path = "../cache-aarch64", optional = true }
+kernal-capability = { path = "../capability", optional = true }
+kernal-core-initrd-aarch64 = { path = "../core-initrd-aarch64" }
+kernal-exceptions-aarch64 = { path = "../exceptions-aarch64", optional = true }
+kernal-fdt = { path = "../../firmware/fdt" }
+kernal-fdt-aarch64 = { path = "../../firmware/fdt-aarch64" }
+kernal-gicv3-aarch64 = { path = "../gicv3-aarch64" }
+kernal-linux-abi = { path = "../../abi/linux", optional = true }
+kernal-linux-bootstrap = { path = "../linux-bootstrap", optional = true }
+kernal-linux-bootstrap-aarch64 = { path = "../linux-bootstrap-aarch64", optional = true }
+kernal-linux-exit-lifecycle = { path = "../linux-exit-lifecycle", optional = true }
+kernal-linux-identity = { path = "../linux-identity", optional = true }
+kernal-linux-write-aarch64 = { path = "../linux-write-aarch64", optional = true }
+kernal-memory = { path = "../memory", optional = true }
+kernal-object = { path = "../object", optional = true }
+kernal-page-table-aarch64 = { path = "../page-table-aarch64" }
+kernal-paging = { path = "../paging" }
+kernal-percpu = { path = "../percpu", optional = true }
+kernal-percpu-aarch64 = { path = "../percpu-aarch64" }
+kernal-process = { path = "../process", optional = true }
+kernal-process-aarch64 = { path = "../process-aarch64", optional = true }
+kernal-scheduler = { path = "../scheduler", optional = true }
+kernal-scheduler-smp = { path = "../scheduler-smp", optional = true }
+kernal-syscall-entry-aarch64 = { path = "../syscall-entry-aarch64", optional = true }
+kernal-user-elf = { path = "../user-elf", optional = true }
+kernal-user-elf-aarch64 = { path = "../user-elf-aarch64", optional = true }
+kernal-user-elf-runtime-aarch64 = { path = "../user-elf-runtime-aarch64", optional = true }
+kernal-user-entry-aarch64 = { path = "../user-entry-aarch64", optional = true }
+kernal-usercopy = { path = "../usercopy", optional = true }
+kernal-usercopy-aarch64 = { path = "../usercopy-aarch64" }
+kernal-vm = { path = "../vm", optional = true }
+
+[features]
+default = []
+step7-qemu-proof = [
+    "dep:kernal-address-space-aarch64",
+    "dep:kernal-memory",
+    "dep:kernal-vm",
+]
+step8-qemu-proof = [
+    "step7-qemu-proof",
+    "dep:kernal-cache-aarch64",
+    "dep:kernal-exceptions-aarch64",
+    "dep:kernal-user-entry-aarch64",
+    "kernal-user-entry-aarch64/qemu-proof",
+]
+step9-qemu-proof = ["step8-qemu-proof"]
+step10-qemu-proof = [
+    "step9-qemu-proof",
+    "dep:kernal-usercopy",
+    "kernal-usercopy-aarch64/qemu-proof",
+]
+step11-qemu-proof = [
+    "step10-qemu-proof",
+    "dep:kernal-capability",
+    "dep:kernal-object",
+    "dep:kernal-percpu",
+    "dep:kernal-process",
+    "dep:kernal-process-aarch64",
+    "dep:kernal-scheduler",
+    "dep:kernal-scheduler-smp",
+]
+step12-qemu-proof = [
+    "step11-qemu-proof",
+    "dep:kernal-user-elf",
+    "dep:kernal-user-elf-aarch64",
+    "dep:kernal-user-elf-runtime-aarch64",
+]
+step13-qemu-proof = [
+    "step12-qemu-proof",
+    "dep:kernal-linux-abi",
+    "dep:kernal-syscall-entry-aarch64",
+]
+step14-qemu-proof = [
+    "step13-qemu-proof",
+    "dep:kernal-linux-bootstrap",
+    "dep:kernal-linux-bootstrap-aarch64",
+    "dep:kernal-linux-exit-lifecycle",
+    "dep:kernal-linux-identity",
+    "dep:kernal-linux-write-aarch64",
+]

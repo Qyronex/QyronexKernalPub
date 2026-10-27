@@ -1,0 +1,31 @@
+{
+  "schema": "kernal-step-scientific-endpoint-v1",
+  "step": 35,
+  "state": "DESIGN_CONTRACT",
+  "research_question": "Can Kernal reproduce modern Linux readiness/event descriptor semantics without lost wakeups, duplicate delivery or descriptor-generation leaks?",
+  "claim_bindings": ["compat.debian13-arm64", "authority.capability-isolation", "performance.kernel-runtime"],
+  "metrics": [
+    {"name":"event_oracle_passed","type":"integer","unit":"cases"},
+    {"name":"event_oracle_total","type":"integer","unit":"cases"},
+    {"name":"epoll_semantic_divergences","type":"integer","unit":"cases"},
+    {"name":"lost_wakeup_count","type":"integer","unit":"events"},
+    {"name":"duplicate_delivery_count","type":"integer","unit":"events"},
+    {"name":"event_delivery_p50_us","type":"number","unit":"microseconds"},
+    {"name":"event_delivery_p95_us","type":"number","unit":"microseconds"},
+    {"name":"event_delivery_p99_us","type":"number","unit":"microseconds"},
+    {"name":"invalid_fd_acceptances","type":"integer","unit":"cases"},
+    {"name":"descriptor_leak_count","type":"integer","unit":"objects"},
+    {"name":"starvation_cases","type":"integer","unit":"cases"}
+  ],
+  "negative_controls": [
+    "closed or stale-generation descriptors must never become ready through a reused FD number",
+    "edge/oneshot semantics must not lose required wakeups or duplicate one-shot delivery",
+    "invalid FD and unsupported flag combinations must return explicit Linux-compatible errors"
+  ],
+  "hard_zero_metrics": ["lost_wakeup_count", "duplicate_delivery_count", "invalid_fd_acceptances", "descriptor_leak_count", "starvation_cases"],
+  "environment_fields": ["tested_commit", "architecture", "debian_target_id", "qemu_version", "qemu_profile_id", "toolchain", "fixture_hashes"],
+  "baseline": {"kind":"pinned-debian13-arm64-linux", "required_for":["event_oracle_passed", "event_oracle_total", "epoll_semantic_divergences", "event_delivery_p50_us", "event_delivery_p95_us", "event_delivery_p99_us"]},
+  "repetition_policy": {"minimum_runs":30, "timing_metrics":"report distribution and variance across declared readiness/event workloads"},
+  "promotion_rule": {"to_measured":"exact-SHA executed evidence must cover epoll/eventfd/timerfd/signalfd/inotify/memfd/pidfd declared surfaces and hard-zero negatives", "to_replicated":"independent reproduction of the same fixture set is required"},
+  "raw_evidence_contract": {"format":"json", "path_template":"research/runtime/step35/<tested_commit>.json", "required_fields":["tested_commit", "environment", "metrics", "negative_controls", "raw_artifact_hash"]}
+}

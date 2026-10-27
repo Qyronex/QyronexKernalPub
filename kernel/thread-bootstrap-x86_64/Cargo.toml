@@ -1,0 +1,33 @@
+[package]
+name = "kernal-thread-bootstrap-x86-64"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+kernal-address-space-x86-64 = { path = "../address-space-x86_64", optional = true }
+kernal-context-x86-64 = { path = "../context-x86_64" }
+kernal-frame-allocator = { path = "../frame-allocator" }
+kernal-kmap = { path = "../kmap" }
+kernal-kmap-x86-64 = { path = "../kmap-x86_64" }
+kernal-memory = { path = "../memory", optional = true }
+kernal-page-table = { path = "../page-table" }
+kernal-paging = { path = "../paging" }
+kernal-percpu = { path = "../percpu" }
+kernal-runtime-page-table-x86-64 = { path = "../runtime-page-table-x86_64" }
+kernal-scheduler = { path = "../scheduler" }
+kernal-thread-context = { path = "../thread-context" }
+kernal-thread-stack-x86-64 = { path = "../thread-stack-x86_64" }
+kernal-vm = { path = "../vm", optional = true }
+
+[features]
+default = []
+step7-qemu-proof = [
+    "dep:kernal-address-space-x86-64",
+    "dep:kernal-memory",
+    "dep:kernal-vm",
+]

@@ -1,0 +1,15 @@
+[package]
+name = "kernal-address-space-aarch64"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+kernal-memory = { path = "../memory" }
+kernal-page-table-aarch64 = { path = "../page-table-aarch64" }
+kernal-paging = { path = "../paging" }
+kernal-vm = { path = "../vm" }

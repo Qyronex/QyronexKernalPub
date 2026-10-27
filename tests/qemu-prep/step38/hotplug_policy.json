@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "step": 38,
+  "policy": "Hotplug is an explicit claim, never an accidental consequence of udev visibility. The first Debian ARM64 QEMU fast path may omit hotplug when using fixed FDT-discovered VirtIO-MMIO devices.",
+  "profiles": {
+    "virtio-mmio-fast-path": {
+      "transport": "FDT-discovered virtio,mmio",
+      "block_hotplug_claimed": false,
+      "network_hotplug_claimed": false,
+      "console_hotplug_claimed": false,
+      "required_udev_lifecycle": ["boot-enumeration", "stable-device-identity"],
+      "reason": "The selected MMIO platform devices are fixed by the QEMU/FDT boot topology; Step 38 must not invent a remove/re-add claim."
+    },
+    "virtio-pci-fallback": {
+      "transport": "VirtIO PCI",
+      "block_hotplug_claimed": true,
+      "network_hotplug_claimed": true,
+      "console_hotplug_claimed": false,
+      "required_udev_lifecycle": ["boot-enumeration", "add", "remove", "re-add", "stale-generation-rejection"],
+      "activation_condition": "Only if Step33/34 explicitly select the PCI fallback and the corresponding PCI/IRQ/DMA runtime owners are released."
+    }
+  },
+  "evidence_rule": "A final Step38 handoff must name exactly one selected transport profile and may require hotplug evidence only where that profile marks the claim true."
+}

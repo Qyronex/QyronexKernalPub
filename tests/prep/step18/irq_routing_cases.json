@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "cases": [
+    {"id":"msi-valid","mode":"msi","vectors":1,"table_bytes":0,"table_bar_bytes":0,"pba_bytes":0,"pba_bar_bytes":0,"assigned_endpoint":41,"requested_endpoint":41,"allowed_cpus":[0,1],"target_cpu":1,"platform_has_its":true,"storm_count":1,"storm_threshold":100,"masked":false,"expected":"accept"},
+    {"id":"msix-valid","mode":"msix","vectors":8,"table_bytes":128,"table_bar_bytes":4096,"pba_bytes":8,"pba_bar_bytes":4096,"assigned_endpoint":52,"requested_endpoint":52,"allowed_cpus":[0,1,2],"target_cpu":2,"platform_has_its":true,"storm_count":2,"storm_threshold":100,"masked":false,"expected":"accept"},
+    {"id":"zero-vectors","mode":"msix","vectors":0,"table_bytes":0,"table_bar_bytes":4096,"pba_bytes":0,"pba_bar_bytes":4096,"assigned_endpoint":1,"requested_endpoint":1,"allowed_cpus":[0],"target_cpu":0,"platform_has_its":true,"storm_count":0,"storm_threshold":10,"masked":false,"expected":"reject"},
+    {"id":"too-many-vectors","mode":"msix","vectors":4096,"table_bytes":65536,"table_bar_bytes":65536,"pba_bytes":512,"pba_bar_bytes":4096,"assigned_endpoint":1,"requested_endpoint":1,"allowed_cpus":[0],"target_cpu":0,"platform_has_its":true,"storm_count":0,"storm_threshold":10,"masked":false,"expected":"reject"},
+    {"id":"table-oob","mode":"msix","vectors":16,"table_bytes":256,"table_bar_bytes":128,"pba_bytes":8,"pba_bar_bytes":4096,"assigned_endpoint":1,"requested_endpoint":1,"allowed_cpus":[0],"target_cpu":0,"platform_has_its":true,"storm_count":0,"storm_threshold":10,"masked":false,"expected":"reject"},
+    {"id":"pba-oob","mode":"msix","vectors":65,"table_bytes":1040,"table_bar_bytes":4096,"pba_bytes":16,"pba_bar_bytes":8,"assigned_endpoint":1,"requested_endpoint":1,"allowed_cpus":[0],"target_cpu":0,"platform_has_its":true,"storm_count":0,"storm_threshold":10,"masked":false,"expected":"reject"},
+    {"id":"foreign-endpoint","mode":"msi","vectors":1,"table_bytes":0,"table_bar_bytes":0,"pba_bytes":0,"pba_bar_bytes":0,"assigned_endpoint":9,"requested_endpoint":10,"allowed_cpus":[0],"target_cpu":0,"platform_has_its":true,"storm_count":0,"storm_threshold":10,"masked":false,"expected":"reject"},
+    {"id":"foreign-affinity","mode":"msi","vectors":1,"table_bytes":0,"table_bar_bytes":0,"pba_bytes":0,"pba_bar_bytes":0,"assigned_endpoint":9,"requested_endpoint":9,"allowed_cpus":[0,1],"target_cpu":3,"platform_has_its":true,"storm_count":0,"storm_threshold":10,"masked":false,"expected":"reject"},
+    {"id":"missing-its","mode":"msix","vectors":2,"table_bytes":32,"table_bar_bytes":4096,"pba_bytes":8,"pba_bar_bytes":4096,"assigned_endpoint":9,"requested_endpoint":9,"allowed_cpus":[0],"target_cpu":0,"platform_has_its":false,"storm_count":0,"storm_threshold":10,"masked":false,"expected":"reject"},
+    {"id":"storm-unmasked","mode":"msi","vectors":1,"table_bytes":0,"table_bar_bytes":0,"pba_bytes":0,"pba_bar_bytes":0,"assigned_endpoint":9,"requested_endpoint":9,"allowed_cpus":[0],"target_cpu":0,"platform_has_its":true,"storm_count":101,"storm_threshold":100,"masked":false,"expected":"reject"}
+  ]
+}

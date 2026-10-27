@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "profile_id": "kernal-debian13-arm64-qemu-fastpath-v1",
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "target_manifest": "docs/debian13/arm64-target.json",
+  "compatibility_matrix": "docs/debian13/compatibility-matrix.json",
+  "reference_inventory": "tests/debian13/evidence/reference-syscalls.json",
+  "baseline_source_sha": "b38cdf7aaedf0c94ad6169d2a9e9da61caef28fc",
+  "baseline_provenance": {
+    "qemu_owner": "xtask/src/step28.rs",
+    "machine": "virt,gic-version=3",
+    "cpu": "max",
+    "memory": "512M",
+    "cpu_matrix": [1, 2, 4],
+    "display": "none",
+    "monitor": "none",
+    "serial": "stdio",
+    "no_reboot": true
+  },
+  "rootfs": {
+    "artifact": "debian-13-generic-arm64-20260712-2537.qcow2",
+    "size_bytes": 431882240,
+    "sha512": "3be884e19878b307a5916eb59be17efb7f1a5ec8290f2253345640f0a8740082fd40cfb7a7940b56cca0a76289ecd448507011cfd1b17472c9998d90f44b5c2c",
+    "sha256": "7e556159a995fa4634e2ea52228ec7a4226193e2d1a87e2c7158e4c6d53ed5fe",
+    "write_policy": "never_write_pinned_base_directly",
+    "runtime_disk_policy": "create_ephemeral_qcow2_overlay_over_verified_pinned_base"
+  },
+  "boot_critical_device_strategy": {
+    "status": "PREP_DECISION_PENDING_RUNTIME_PROOF",
+    "preferred_transport": "virtio-mmio",
+    "preferred_block_device": "virtio-blk-device",
+    "preferred_net_device": "virtio-net-device",
+    "discovery": "FDT",
+    "rationale": "Keep the first Debian ARM64 QEMU product milestone independent from nonessential PCIe/MSI-X/GICv3-ITS/SMMUv3 breadth. If virtio-mmio proves unsuitable, fall back to the canonical VirtIO PCI path explicitly rather than silently widening scope.",
+    "fallback_transport": "virtio-pci",
+    "fallback_requires": [
+      "PCIe discovery/ownership",
+      "interrupt routing sufficient for selected VirtIO PCI device",
+      "DMA confinement policy required by the accepted QEMU profile"
+    ]
+  },
+  "network_acceptance": {
+    "qemu_backend": "user",
+    "default_guest_network": "10.0.2.0/24",
+    "guest_visible_host": "10.0.2.2",
+    "guest_visible_dns": "10.0.2.3",
+    "required_guest_features": [
+      "loopback",
+      "one VirtIO NIC",
+      "DNS",
+      "outbound TCP",
+      "outbound UDP"
+    ],
+    "guest_to_host_probe": {
+      "tcp": {
+        "guest_target_host": "10.0.2.2",
+        "guest_target_port": 18081,
+        "preferred_host_bind": "127.0.0.1",
+        "preferred_host_port": 18081
+      },
+      "udp": {
+        "guest_target_host": "10.0.2.2",
+        "guest_target_port": 18082,
+        "preferred_host_bind": "127.0.0.1",
+        "preferred_host_port": 18082
+      },
+      "note": "Guest-to-host endpoint addresses follow the QEMU user-network default. The exact QEMU invocation and endpoint configuration must be recorded in runtime evidence."
+    },
+    "host_reachability_probe": {
+      "guest_tcp_port": 8080,
+      "preferred_host_bind": "127.0.0.1",
+      "preferred_host_port": 18080,
+      "note": "Host-to-guest reachability uses QEMU hostfwd. Final harness may select another declared free host port, but must record the exact invocation."
+    },
+    "dns_policy": "Use the QEMU virtual DNS path or an explicitly recorded deterministic local DNS fixture; final acceptance must not silently depend on ambient public DNS."
+  },
+  "step40_repeatability": {
+    "minimum_repeated_boots": 3,
+    "required_shutdown_paths": ["reboot", "poweroff"],
+    "source_sha_policy": "single_exact_unchanged_sha_for_all_final_evidence",
+    "qemu_invocation_policy": "record_complete_argv_and_qemu_version",
+    "unsupported_operation_policy": "explicit_linux_compatible_failure_no_fake_success"
+  },
+  "non_blocking_for_first_qemu_product_milestone": [
+    "broad PCIe device matrix",
+    "full GICv3 ITS coverage",
+    "real-hardware SMMUv3 proof",
+    "real ARM64 hardware matrix",
+    "UEFI/GOP UI",
+    "x86_64 parity",
+    "RISC-V64 parity",
+    "containers",
+    "desktop"
+  ]
+}

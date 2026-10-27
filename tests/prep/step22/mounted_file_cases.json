@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "cases": [
+    {"id":"mount-read-ok","namespace":7,"handle_namespace":7,"volume_generation":11,"expected_generation":11,"encrypted":true,"authenticated":true,"path":"/srv/data/file","symlink_hops":0,"cross_mount_rename":false,"expected":"accept"},
+    {"id":"stale-volume-generation","namespace":7,"handle_namespace":7,"volume_generation":10,"expected_generation":11,"encrypted":true,"authenticated":true,"path":"/srv/data/file","symlink_hops":0,"cross_mount_rename":false,"expected":"reject"},
+    {"id":"cross-namespace-handle","namespace":7,"handle_namespace":8,"volume_generation":11,"expected_generation":11,"encrypted":true,"authenticated":true,"path":"/srv/data/file","symlink_hops":0,"cross_mount_rename":false,"expected":"reject"},
+    {"id":"raw-plaintext-backend","namespace":7,"handle_namespace":7,"volume_generation":11,"expected_generation":11,"encrypted":false,"authenticated":true,"path":"/srv/data/file","symlink_hops":0,"cross_mount_rename":false,"expected":"reject"},
+    {"id":"unauthenticated-backend","namespace":7,"handle_namespace":7,"volume_generation":11,"expected_generation":11,"encrypted":true,"authenticated":false,"path":"/srv/data/file","symlink_hops":0,"cross_mount_rename":false,"expected":"reject"},
+    {"id":"dotdot-escape","namespace":7,"handle_namespace":7,"volume_generation":11,"expected_generation":11,"encrypted":true,"authenticated":true,"path":"/srv/data/../../etc/shadow","symlink_hops":0,"cross_mount_rename":false,"expected":"reject"},
+    {"id":"symlink-loop","namespace":7,"handle_namespace":7,"volume_generation":11,"expected_generation":11,"encrypted":true,"authenticated":true,"path":"/srv/data/link","symlink_hops":41,"cross_mount_rename":false,"expected":"reject"},
+    {"id":"same-mount-rename","namespace":7,"handle_namespace":7,"volume_generation":11,"expected_generation":11,"encrypted":true,"authenticated":true,"path":"/srv/data/a","symlink_hops":0,"cross_mount_rename":false,"expected":"accept"},
+    {"id":"cross-mount-rename","namespace":7,"handle_namespace":7,"volume_generation":11,"expected_generation":11,"encrypted":true,"authenticated":true,"path":"/srv/data/a","symlink_hops":0,"cross_mount_rename":true,"expected":"reject"}
+  ]
+}

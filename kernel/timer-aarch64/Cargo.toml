@@ -1,0 +1,10 @@
+[package]
+name = "kernal-timer-aarch64"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+kernal-arch-aarch64 = { path = "../arch-aarch64" }
+kernal-time = { path = "../time" }

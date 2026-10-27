@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "required_repro_inputs": ["Cargo.toml", "Cargo.lock", "rust-toolchain.toml", "linker-script", "native-c", "native-header", "assembly", "Dockerfile", "Makefile"],
+  "fuzz_surfaces": [
+    {"name":"elf64","category":"parser","path":"boot/elf"},
+    {"name":"bootinfo","category":"parser","path":"abi/bootinfo"},
+    {"name":"acpi","category":"parser","path":"firmware/acpi"},
+    {"name":"fdt","category":"parser","path":"firmware/fdt"},
+    {"name":"cpio","category":"parser","path":"kernel/cpio"}
+  ],
+  "supply_chain_rules": ["github-actions-pinned-by-sha", "no-cargo-git-dependency-without-revision", "unsafe-inventory", "assembly-inventory"],
+  "identity_samples": [
+    {"path":"Cargo.toml","sha256":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"},
+    {"path":"Cargo.lock","sha256":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"},
+    {"path":"kernel/core-aarch64/linker.ld","sha256":"cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc"}
+  ]
+}

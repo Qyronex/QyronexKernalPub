@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "cases": [
+    {"id":"read-ok","op":"read","queue_size":8,"head":0,"descriptors":[{"next":1},{"next":2},{"next":null}],"features":["VERSION_1"],"buffer_generation":4,"expected_generation":4,"buffer_revoked":false,"expected":"accept"},
+    {"id":"write-ok","op":"write","queue_size":8,"head":0,"descriptors":[{"next":1},{"next":2},{"next":null}],"features":["VERSION_1"],"buffer_generation":9,"expected_generation":9,"buffer_revoked":false,"expected":"accept"},
+    {"id":"flush-ok","op":"flush","queue_size":8,"head":0,"descriptors":[{"next":1},{"next":null}],"features":["VERSION_1","BLK_F_FLUSH"],"buffer_generation":2,"expected_generation":2,"buffer_revoked":false,"expected":"accept"},
+    {"id":"descriptor-cycle","op":"read","queue_size":8,"head":0,"descriptors":[{"next":1},{"next":0}],"features":["VERSION_1"],"buffer_generation":1,"expected_generation":1,"buffer_revoked":false,"expected":"reject"},
+    {"id":"descriptor-oob","op":"read","queue_size":8,"head":0,"descriptors":[{"next":9}],"features":["VERSION_1"],"buffer_generation":1,"expected_generation":1,"buffer_revoked":false,"expected":"reject"},
+    {"id":"queue-not-power-two","op":"read","queue_size":6,"head":0,"descriptors":[{"next":null}],"features":["VERSION_1"],"buffer_generation":1,"expected_generation":1,"buffer_revoked":false,"expected":"reject"},
+    {"id":"missing-version1","op":"read","queue_size":8,"head":0,"descriptors":[{"next":null}],"features":[],"buffer_generation":1,"expected_generation":1,"buffer_revoked":false,"expected":"reject"},
+    {"id":"unknown-feature","op":"read","queue_size":8,"head":0,"descriptors":[{"next":null}],"features":["VERSION_1","UNSUPPORTED_X"],"buffer_generation":1,"expected_generation":1,"buffer_revoked":false,"expected":"reject"},
+    {"id":"write-on-readonly","op":"write","queue_size":8,"head":0,"descriptors":[{"next":null}],"features":["VERSION_1","BLK_F_RO"],"buffer_generation":1,"expected_generation":1,"buffer_revoked":false,"expected":"reject"},
+    {"id":"flush-without-feature","op":"flush","queue_size":8,"head":0,"descriptors":[{"next":null}],"features":["VERSION_1"],"buffer_generation":1,"expected_generation":1,"buffer_revoked":false,"expected":"reject"},
+    {"id":"stale-buffer-generation","op":"read","queue_size":8,"head":0,"descriptors":[{"next":null}],"features":["VERSION_1"],"buffer_generation":7,"expected_generation":8,"buffer_revoked":false,"expected":"reject"},
+    {"id":"revoked-buffer","op":"read","queue_size":8,"head":0,"descriptors":[{"next":null}],"features":["VERSION_1"],"buffer_generation":8,"expected_generation":8,"buffer_revoked":true,"expected":"reject"}
+  ]
+}

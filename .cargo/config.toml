@@ -1,0 +1,27 @@
+[alias]
+xtask = "run -p xtask --"
+
+# Keep real Cargo rustc invocations on the repository-pinned toolchain so cross targets resolve
+# their matching core/std artifacts even when Homebrew rustc appears first in PATH. The wrapper is
+# deliberately frontend-safe: tools/rustup-rustc-wrapper.sh pins only genuine rustc/rustc.exe and
+# transparently delegates rust-analyzer/CLion/sccache/clippy compiler frontends unchanged. This
+# preserves IDE crate-graph discovery while keeping AArch64 builds on Rust 1.98.0.
+[build]
+rustc-wrapper = "./tools/rustup-rustc-wrapper.sh"
+rustdoc = "./tools/rustup-rustdoc.sh"
+
+# The freestanding x86_64 kernel is loaded into its linked high-half virtual addresses by the UEFI
+# loader and has no dynamic relocation stage. Force a static relocation model so rustc/LLD never
+# leave PIE/GOT-relative runtime relocations for the loader to process. Keep the kernel code model
+# explicit as part of the same contract.
+[target.x86_64-unknown-none]
+rustflags = [
+  "-C", "relocation-model=static",
+  "-C", "code-model=kernel",
+  "-C", "link-arg=-Tkernel/core/linker-x86_64.ld",
+]
+
+# Soft-float keeps kernel code from depending on FP/NEON register state before the scheduler has an
+# explicit SIMD/FPU ownership and save/restore policy.
+[target.aarch64-unknown-none-softfloat]
+rustflags = ["-C", "link-arg=-Tkernel/core-aarch64/linker-aarch64.ld"]

@@ -1,0 +1,54 @@
+[package]
+name = "kernal-core"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[[bin]]
+name = "kernal-core"
+path = "src/main.rs"
+test = false
+bench = false
+
+[dependencies]
+kernal-acpi-physical = { path = "../../firmware/acpi-physical" }
+kernal-ap-startup-x86-64 = { path = "../ap-startup-x86_64" }
+kernal-apic-runtime-x86-64 = { path = "../apic-runtime-x86_64" }
+kernal-apic-x86-64 = { path = "../apic-x86_64" }
+kernal-arch-x86-64 = { path = "../arch-x86_64" }
+kernal-bootinfo = { path = "../../abi/bootinfo" }
+kernal-descriptors-x86-64 = { path = "../descriptors-x86_64" }
+kernal-exceptions-x86-64 = { path = "../exceptions-x86_64" }
+kernal-frame-allocator = { path = "../frame-allocator" }
+kernal-handoff = { path = "../../boot/handoff" }
+kernal-idle-x86-64 = { path = "../idle-x86_64" }
+kernal-interrupt-control-x86-64 = { path = "../interrupt-control-x86_64" }
+kernal-interrupts-x86-64 = { path = "../interrupts-x86_64" }
+kernal-irq-runtime-x86-64 = { path = "../irq-runtime-x86_64" }
+kernal-kmap = { path = "../kmap" }
+kernal-kmap-x86-64 = { path = "../kmap-x86_64" }
+kernal-page-table = { path = "../page-table" }
+kernal-paging = { path = "../paging" }
+kernal-percpu = { path = "../percpu" }
+kernal-percpu-layout-x86-64 = { path = "../percpu-layout-x86_64" }
+kernal-percpu-x86-64 = { path = "../percpu-x86_64" }
+kernal-physical-io = { path = "../physical-io" }
+kernal-runtime-page-table-x86-64 = { path = "../runtime-page-table-x86_64" }
+kernal-scheduler = { path = "../scheduler" }
+kernal-scheduler-cpu = { path = "../scheduler-cpu" }
+kernal-smp-x86-64 = { path = "../smp-x86_64" }
+kernal-thread-bootstrap-x86-64 = { path = "../thread-bootstrap-x86_64" }
+kernal-thread-context = { path = "../thread-context" }
+kernal-thread-reaper-x86-64 = { path = "../thread-reaper-x86_64" }
+kernal-timer-runtime-x86-64 = { path = "../timer-runtime-x86_64" }
+kernal-topology = { path = "../topology" }
+kernal-tsc-bootstrap-x86-64 = { path = "../tsc-bootstrap-x86_64" }
+kernal-tsc-x86-64 = { path = "../tsc-x86_64" }
+
+[features]
+default = []
+qemu-exit = [
+    "kernal-thread-bootstrap-x86-64/step7-qemu-proof",
+    "kernal-tsc-x86-64/qemu-fixed-frequency",
+]

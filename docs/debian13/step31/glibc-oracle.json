@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "kind": "step31-dynamic-glibc-prep",
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "architecture": "arm64",
+  "source_policy": {
+    "reuse_existing_debian13_oracle": true,
+    "allow_patched_debian_binaries": false,
+    "reference_cases": "tests/debian13/reference-cases.json",
+    "reference_syscalls": "tests/debian13/evidence/reference-syscalls.json",
+    "target_manifest": "docs/debian13/arm64-target.json"
+  },
+  "interpreter": {
+    "pt_interp": "/lib/ld-linux-aarch64.so.1",
+    "reference_case_id": "component.glibc-loader.help",
+    "contract": [
+      "exactly_one_pt_interp_when_dynamic_interpreter_is_declared",
+      "bounded_file_range",
+      "nul_terminated_without_trailing_payload",
+      "no_embedded_nul_path_ambiguity",
+      "path_is_observed_only_during_prep",
+      "runtime_resolution_is_deferred_to_step31_integration"
+    ]
+  },
+  "elf": {
+    "accepted_image_types": ["ET_EXEC", "ET_DYN"],
+    "wx_policy": "reject_any_effective_page_permission_union_containing_write_and_execute_after_page_alignment_rounding_and_overlapping_pt_loads",
+    "required_metadata": [
+      "load_bias",
+      "program_header_virtual_address",
+      "program_header_entry_size",
+      "program_header_entry_count",
+      "entry_point",
+      "interpreter_path"
+    ]
+  },
+  "auxv": {
+    "required": [
+      {"name": "AT_PHDR", "number": 3},
+      {"name": "AT_PHENT", "number": 4},
+      {"name": "AT_PHNUM", "number": 5},
+      {"name": "AT_PAGESZ", "number": 6},
+      {"name": "AT_BASE", "number": 7},
+      {"name": "AT_ENTRY", "number": 9},
+      {"name": "AT_UID", "number": 11},
+      {"name": "AT_EUID", "number": 12},
+      {"name": "AT_GID", "number": 13},
+      {"name": "AT_EGID", "number": 14},
+      {"name": "AT_SECURE", "number": 23},
+      {"name": "AT_RANDOM", "number": 25},
+      {"name": "AT_EXECFN", "number": 31}
+    ],
+    "at_base_semantics": "interpreter_load_bias_for_dynamic_processes_zero_when_no_interpreter",
+    "at_random": {
+      "bytes": 16,
+      "fresh_per_successful_exec": true,
+      "all_zero_forbidden": true,
+      "userspace_pointer_must_be_readable": true
+    }
+  },
+  "tls": {
+    "register": "TPIDR_EL0",
+    "initial_thread": "dynamic_loader_may_establish_userspace_tls_before_transferring_to_program",
+    "clone_tls": "clone_tls_value_must_be_generation_owned_by_the_new_thread_context",
+    "context_switch": "restore_only_the_selected_live_thread_generation",
+    "stale_generation": "fail_closed"
+  },
+  "pthread": {
+    "required_kernel_contracts": [
+      "set_tid_address",
+      "set_robust_list",
+      "futex_wait_wake",
+      "thread_exit_clear_tid_and_wake"
+    ]
+  },
+  "syscalls": {
+    "reference_case_ids": [
+      "component.busybox.help",
+      "component.bin-sh.printf",
+      "component.systemd.version"
+    ],
+    "required_for_reference_bootstrap": [
+      "brk",
+      "close",
+      "futex",
+      "getrandom",
+      "mmap",
+      "mprotect",
+      "munmap",
+      "openat",
+      "read",
+      "set_robust_list",
+      "set_tid_address"
+    ],
+    "required_but_unobserved_in_reference_cases": [],
+    "optional_with_enosys_fallback": ["rseq"],
+    "policy": {
+      "unknown_required_syscall": "fail_closed_and_report_oracle_delta",
+      "optional_syscall": "ENOSYS_only_when_glibc_has_a_defined_fallback",
+      "fake_success": false,
+      "process_name_special_cases": false
+    }
+  },
+  "acceptance_boundary": {
+    "prep_is_milestone_acceptance": false,
+    "step31_final_integration_requires_step30_accepted_and_merged": true,
+    "final_step31_evidence_must_use_one_exact_frozen_sha": true
+  }
+}

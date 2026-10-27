@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "authority": "OWNER_PREPARATION_DOCTRINE.md",
+  "critical_path": [30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40],
+  "prep_states": ["PREP_OPEN", "PREP_ACTIVE", "PREP_READY", "PREP_RECONCILE"],
+  "runtime_states": ["RUNTIME_LOCKED", "RUNTIME_ACTIVE", "ACCEPTANCE", "ACCEPTED"],
+  "global_rules": {
+    "runtime_single_writer": true,
+    "runtime_locked_does_not_block_prep": true,
+    "prep_is_not_acceptance": true,
+    "exact_sha_acceptance": true,
+    "aarch64_only": true,
+    "process_name_special_cases_forbidden": true,
+    "fake_success_forbidden": true,
+    "step30_runner_priority": true
+  },
+  "wave_state": {
+    "prep_state": "PREP_ACTIVE",
+    "reason": "branch/main reconciliation and host-side structural validation are complete; deeper pinned-Debian reference collection/review remains before the reviewed handoff can freeze",
+    "production_runtime_write_allowed": false,
+    "reconciliation_state": "DONE",
+    "host_gate": {
+      "result_id": "qprep-98bfc8-shell",
+      "tested_commit": "98bfc8673e9df18f0633650010819636d0aab849",
+      "worker": "mac-b",
+      "exit_code": 0,
+      "checks": "metadata + cross-references + expanded-reference-cases + scientific-claims + 32 unit regressions"
+    },
+    "next_gate": "QPXX.collect-reference-wave"
+  },
+  "steps": [
+    {
+      "step": 31,
+      "issue": 1147,
+      "prep_state": "PREP_READY",
+      "runtime_state": "RUNTIME_LOCKED",
+      "runtime_dependency": "accepted Step 30.7",
+      "manifest": "docs/debian13/qemu-prep/step31/PREP_MANIFEST.md",
+      "canonical_existing_prep": [
+        {
+          "branch": "agent/step31-elf-contract-prep-arm64",
+          "sha": "bf7f0acb28cf87898b2f99a34ff6ae8e29566a88",
+          "gates": "fmt-check -> workspace-test -> clippy -> arm-build",
+          "gate_state": "EXACT_GREEN_FROZEN"
+        },
+        {
+          "branch": "agent/step31-glibc-oracle-prep-arm64",
+          "sha": "51259f6e7343367290ccc973e101c94b422fa4a1",
+          "gates": "fmt-check -> workspace-test -> clippy -> arm-build",
+          "gate_state": "EXACT_GREEN_FROZEN"
+        },
+        {
+          "branch": "agent/step31-tls-auxv-tests-prep-arm64",
+          "sha": "0ed8e64e1d2919d7f50b35bf58fb720d6874b9cb",
+          "gates": "fmt-check -> workspace-test -> clippy -> arm-build",
+          "gate_state": "EXACT_GREEN_FROZEN"
+        }
+      ],
+      "remaining_prep": [
+        "collect/review deeper pinned-Debian dynamic-coreutils/shell reference scenario",
+        "reconcile frozen prep heads against accepted Step-30 merge before runtime integration"
+      ]
+    },
+    {
+      "step": 32,
+      "issue": 1166,
+      "prep_state": "PREP_ACTIVE",
+      "runtime_state": "RUNTIME_LOCKED",
+      "runtime_dependency": "accepted Step 31",
+      "manifest": "docs/debian13/qemu-prep/step32/PREP_MANIFEST.md"
+    },
+    {
+      "step": 33,
+      "issue": 1167,
+      "prep_state": "PREP_ACTIVE",
+      "runtime_state": "RUNTIME_LOCKED",
+      "runtime_dependency": "accepted Step 32",
+      "manifest": "docs/debian13/qemu-prep/step33/PREP_MANIFEST.md",
+      "fast_path_decision": "prefer virtio-mmio for first QEMU proof if runtime safety proof succeeds"
+    },
+    {
+      "step": 34,
+      "issue": 1168,
+      "prep_state": "PREP_ACTIVE",
+      "runtime_state": "RUNTIME_LOCKED",
+      "runtime_dependency": "accepted Step 33",
+      "manifest": "docs/debian13/qemu-prep/step34/PREP_MANIFEST.md",
+      "fast_path_decision": "prefer virtio-mmio NIC for first QEMU proof if runtime safety proof succeeds"
+    },
+    {
+      "step": 35,
+      "issue": 1169,
+      "prep_state": "PREP_ACTIVE",
+      "runtime_state": "RUNTIME_LOCKED",
+      "runtime_dependency": "accepted Step 34",
+      "manifest": "docs/debian13/qemu-prep/step35/PREP_MANIFEST.md"
+    },
+    {
+      "step": 36,
+      "issue": 1170,
+      "prep_state": "PREP_ACTIVE",
+      "runtime_state": "RUNTIME_LOCKED",
+      "runtime_dependency": "accepted Step 35",
+      "manifest": "docs/debian13/qemu-prep/step36/PREP_MANIFEST.md"
+    },
+    {
+      "step": 37,
+      "issue": 1171,
+      "prep_state": "PREP_ACTIVE",
+      "runtime_state": "RUNTIME_LOCKED",
+      "runtime_dependency": "accepted Step 36",
+      "manifest": "docs/debian13/qemu-prep/step37/PREP_MANIFEST.md"
+    },
+    {
+      "step": 38,
+      "issue": 1172,
+      "prep_state": "PREP_ACTIVE",
+      "runtime_state": "RUNTIME_LOCKED",
+      "runtime_dependency": "accepted Step 37",
+      "manifest": "docs/debian13/qemu-prep/step38/PREP_MANIFEST.md"
+    },
+    {
+      "step": 39,
+      "issue": 1173,
+      "prep_state": "PREP_ACTIVE",
+      "runtime_state": "RUNTIME_LOCKED",
+      "runtime_dependency": "accepted Step 38",
+      "manifest": "docs/debian13/qemu-prep/step39/PREP_MANIFEST.md"
+    },
+    {
+      "step": 40,
+      "issue": 1174,
+      "prep_state": "PREP_ACTIVE",
+      "runtime_state": "RUNTIME_LOCKED",
+      "runtime_dependency": "accepted Step 39",
+      "manifest": "docs/debian13/qemu-prep/step40/PREP_MANIFEST.md"
+    }
+  ],
+  "prep_ready_definition": [
+    "requirements and dependencies recorded",
+    "canonical owners and conflicts mapped",
+    "integration landing map recorded",
+    "fixtures/oracles generated or pinned",
+    "negative/error cases recorded",
+    "machine-readable validation passes",
+    "remaining runtime-only edits enumerated",
+    "acceptance probes and evidence fields recorded",
+    "frozen PREP head/artifact hashes recorded"
+  ]
+}

@@ -1,0 +1,23 @@
+[package]
+name = "kernal-user-elf-aarch64"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+kernal-load-plan = { path = "../../boot/load-plan" }
+kernal-memory = { path = "../memory" }
+kernal-object = { path = "../object" }
+kernal-page-table-aarch64 = { path = "../page-table-aarch64" }
+kernal-process = { path = "../process" }
+kernal-process-aarch64 = { path = "../process-aarch64" }
+kernal-user-elf = { path = "../user-elf" }
+kernal-vm = { path = "../vm" }
+
+[dev-dependencies]
+kernal-elf = { path = "../../boot/elf" }
+kernal-frame-allocator = { path = "../frame-allocator" }
+
+[lib]
+path = "src/lib.rs"

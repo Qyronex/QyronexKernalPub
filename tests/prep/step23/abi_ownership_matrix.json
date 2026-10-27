@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "surfaces": [
+    {"id":"pt_interp","canonical_step":31,"canonical_owner":"boot/elf + user-elf-runtime-aarch64","duplicate_allowed":false,"unsupported_errno":"ENOEXEC"},
+    {"id":"dynamic_tls_auxv","canonical_step":31,"canonical_owner":"user-elf + context-aarch64","duplicate_allowed":false,"unsupported_errno":"ENOEXEC"},
+    {"id":"signals","canonical_step":30,"canonical_owner":"linux-signal + core-aarch64 Step30 runtime","duplicate_allowed":false,"unsupported_errno":"EINVAL"},
+    {"id":"process_futex_clone","canonical_step":30,"canonical_owner":"linux-futex/runtime + process/scheduler owners","duplicate_allowed":false,"unsupported_errno":"EINVAL"},
+    {"id":"sockets_network","canonical_step":34,"canonical_owner":"future shared network/socket owner","duplicate_allowed":false,"unsupported_errno":"EAFNOSUPPORT"},
+    {"id":"poll_select_epoll","canonical_step":35,"canonical_owner":"future shared readiness/event-fd owner","duplicate_allowed":false,"unsupported_errno":"ENOSYS"},
+    {"id":"tty_ioctl","canonical_step":32,"canonical_owner":"future TTY/device owner over existing FD/VFS","duplicate_allowed":false,"unsupported_errno":"ENOTTY"},
+    {"id":"generic_unknown_syscall","canonical_step":23,"canonical_owner":"linux syscall classification boundary","duplicate_allowed":false,"unsupported_errno":"ENOSYS"}
+  ],
+  "required_surface_ids": ["pt_interp","dynamic_tls_auxv","signals","process_futex_clone","sockets_network","poll_select_epoll","tty_ioctl","generic_unknown_syscall"]
+}

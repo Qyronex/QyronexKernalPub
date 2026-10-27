@@ -1,0 +1,85 @@
+[package]
+name = "kernal-core-aarch64"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "kernal-core-aarch64"
+path = "src/main.rs"
+test = false
+bench = false
+
+[dependencies]
+kernal-arch-aarch64 = { path = "../arch-aarch64" }
+kernal-capability = { path = "../capability" }
+kernal-context-aarch64 = { path = "../context-aarch64" }
+kernal-cpio = { path = "../cpio" }
+kernal-exceptions-aarch64 = { path = "../exceptions-aarch64" }
+kernal-fdt = { path = "../../firmware/fdt" }
+kernal-fdt-aarch64 = { path = "../../firmware/fdt-aarch64" }
+kernal-frame-allocator = { path = "../frame-allocator" }
+kernal-gicv3-aarch64 = { path = "../gicv3-aarch64" }
+kernal-kmap-aarch64 = { path = "../kmap-aarch64" }
+kernal-linux-aarch64-abi = { path = "../../abi/linux-aarch64" }
+kernal-linux-abi = { path = "../../abi/linux" }
+kernal-linux-bootstrap = { path = "../linux-bootstrap" }
+kernal-linux-bootstrap-aarch64 = { path = "../linux-bootstrap-aarch64" }
+kernal-linux-clone = { path = "../linux-clone" }
+kernal-linux-clone-aarch64 = { path = "../linux-clone-aarch64" }
+kernal-linux-clone-runtime-aarch64 = { path = "../linux-clone-runtime-aarch64" }
+kernal-linux-clone-exit-aarch64 = { path = "../linux-clone-exit-aarch64" }
+kernal-linux-clone-trap-aarch64 = { path = "../linux-clone-trap-aarch64" }
+kernal-linux-credentials = { path = "../linux-credentials" }
+kernal-linux-exec = { path = "../linux-exec" }
+kernal-linux-exit-lifecycle = { path = "../linux-exit-lifecycle" }
+kernal-linux-fd = { path = "../linux-fd" }
+kernal-linux-futex-runtime = { path = "../linux-futex-runtime" }
+kernal-linux-futex-trap-aarch64 = { path = "../linux-futex-trap-aarch64" }
+kernal-linux-identity = { path = "../linux-identity" }
+kernal-linux-pipe = { path = "../linux-pipe" }
+kernal-linux-signal = { path = "../linux-signal" }
+kernal-linux-vfs = { path = "../linux-vfs" }
+kernal-linux-vm = { path = "../linux-vm" }
+kernal-linux-vm-aarch64 = { path = "../linux-vm-aarch64" }
+kernal-linux-wait = { path = "../linux-wait" }
+kernal-linux-write-aarch64 = { path = "../linux-write-aarch64" }
+kernal-memory = { path = "../memory" }
+kernal-object = { path = "../object" }
+kernal-page-table-aarch64 = { path = "../page-table-aarch64" }
+kernal-percpu = { path = "../percpu" }
+kernal-percpu-aarch64 = { path = "../percpu-aarch64" }
+kernal-process = { path = "../process" }
+kernal-process-aarch64 = { path = "../process-aarch64" }
+kernal-protected-boot-aarch64 = { path = "../protected-boot-aarch64" }
+kernal-psci-aarch64 = { path = "../psci-aarch64" }
+kernal-qemu-initrd-aarch64 = { path = "../qemu-initrd-aarch64" }
+kernal-scheduler = { path = "../scheduler" }
+kernal-scheduler-smp = { path = "../scheduler-smp" }
+kernal-scheduler-cpu = { path = "../scheduler-cpu" }
+kernal-thread-context = { path = "../thread-context" }
+kernal-thread-stack-aarch64 = { path = "../thread-stack-aarch64" }
+kernal-timer-aarch64 = { path = "../timer-aarch64" }
+kernal-user-elf-aarch64 = { path = "../user-elf-aarch64" }
+kernal-user-elf-runtime-aarch64 = { path = "../user-elf-runtime-aarch64" }
+kernal-user-entry-aarch64 = { path = "../user-entry-aarch64" }
+kernal-user-initial-context-aarch64 = { path = "../user-initial-context-aarch64" }
+kernal-usercopy = { path = "../usercopy" }
+kernal-usercopy-aarch64 = { path = "../usercopy-aarch64" }
+kernal-vm = { path = "../vm" }
+
+[features]
+default = []
+qemu-proof = ["kernal-protected-boot-aarch64/step14-qemu-proof"]
+step15-qemu-proof = ["qemu-proof"]
+step28-qemu-proof = ["step15-qemu-proof"]
+step29-qemu-proof = ["step28-qemu-proof"]
+step29-directory-qemu-proof = ["step29-qemu-proof"]
+step29-fd-pipe-qemu-proof = ["step29-qemu-proof"]
+step29-fs-breadth-qemu-proof = ["step29-qemu-proof"]
+step29-fs-breadth-negative-qemu-proof = ["step29-qemu-proof"]
+step30-final-qemu-proof = ["step29-qemu-proof"]

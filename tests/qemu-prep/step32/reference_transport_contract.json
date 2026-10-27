@@ -1,0 +1,80 @@
+{
+  "schema": "kernal-step32-reference-transport-v1",
+  "step": 32,
+  "state": "PREP_IN_PROGRESS",
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "architecture": "arm64",
+  "archive_mode": "git-archive-no-dotgit",
+  "archive_required_paths": [
+    "docs/debian13/arm64-target.json",
+    "tests/qemu-prep/step32/pty_probe.c",
+    "tools/qemu-prep/step32/build_run_pty_probe.sh",
+    "tools/qemu-prep/step32/collect_tty_reference.sh",
+    "tools/qemu-prep/step32/normalize_tty_reference.py"
+  ],
+  "source_commit": {
+    "environment": "KERNAL_STEP32_SOURCE_COMMIT",
+    "format": "full-lowercase-40-hex",
+    "required": true,
+    "guest_git_metadata_required": false
+  },
+  "guest_invocation": {
+    "working_directory": "archive-root",
+    "argv": [
+      "bash",
+      "tools/qemu-prep/step32/collect_tty_reference.sh"
+    ],
+    "environment": {
+      "KERNAL_STEP32_SOURCE_COMMIT": "<exact-40-hex-source-sha>",
+      "KERNAL_STEP32_REFERENCE_OUT": "/tmp/kernal-step32-tty-reference.raw",
+      "KERNAL_STEP32_REFERENCE_JSON": "/tmp/kernal-step32-tty-reference.json"
+    }
+  },
+  "return_artifacts": [
+    {
+      "kind": "raw",
+      "path": "/tmp/kernal-step32-tty-reference.raw"
+    },
+    {
+      "kind": "normalized",
+      "path": "/tmp/kernal-step32-tty-reference.json"
+    }
+  ],
+  "normalized_evidence": {
+    "schema": "kernal-step32-debian13-tty-reference-v1",
+    "required_sections": [
+      "provenance",
+      "termios",
+      "winsize",
+      "devices",
+      "entropy",
+      "pty"
+    ],
+    "required_provenance_fields": [
+      "schema",
+      "collected_at",
+      "os_id",
+      "os_version_id",
+      "architecture",
+      "kernel_release",
+      "source_commit",
+      "target_sha256",
+      "raw_sha256",
+      "compiler"
+    ]
+  },
+  "completion_condition": "Return both artifacts from the pinned Debian 13 ARM64 guest, then run the required host verifier so normalized evidence is proven to match the raw transcript, exact source commit and pinned target hash.",
+  "runtime_authority": "none",
+  "host_verification": {
+    "argv": [
+      "python3",
+      "-B",
+      "tools/qemu-prep/step32/verify_tty_reference_evidence.py",
+      "<returned-raw-artifact>",
+      "<returned-normalized-artifact>",
+      "<exact-40-hex-source-sha>"
+    ],
+    "success_marker": "STEP32_REFERENCE_EVIDENCE_OK",
+    "required": true
+  }
+}

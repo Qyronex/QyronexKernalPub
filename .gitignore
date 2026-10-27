@@ -1,0 +1,20 @@
+/target/
+.DS_Store
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Local development and generated evidence
+runner-results/
+runner-notes/
+RUNNER_QUEUE/
+RUNNER_CONTROL/
+RUNNER_REQUEST
+PROJECT_PROGRESS.svg
+LOC.md
+
+# Temporary local files
+*.tmp
+*.bak
+*.orig

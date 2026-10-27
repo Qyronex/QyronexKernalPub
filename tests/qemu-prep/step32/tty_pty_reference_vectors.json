@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "step": 32,
+  "target_id": "debian-13-trixie-arm64-20260712-2537",
+  "purpose": "Reference vectors to freeze the smallest Debian-required device, TTY/PTTY and job-control contract before runtime integration.",
+  "existing_observations": [
+    {
+      "case": "functional.busybox.tty-ioctl",
+      "ioctl": "TCGETS",
+      "source": "tests/debian13/evidence/reference-syscalls.json"
+    },
+    {
+      "case": "component.busybox.help",
+      "ioctl": "TIOCGWINSZ",
+      "source": "tests/debian13/evidence/reference-syscalls.json"
+    },
+    {
+      "case": "component.systemd.version",
+      "paths": [
+        "/dev/console",
+        "/dev/null"
+      ],
+      "source": "tests/debian13/evidence/reference-syscalls.json"
+    }
+  ],
+  "reference_cases": [
+    {
+      "id": "device.null",
+      "kind": "reference_guest",
+      "operation": "open /dev/null read-write; one-byte write succeeds and read returns EOF",
+      "capture": [
+        "open_result",
+        "write_result",
+        "read_result",
+        "errno"
+      ],
+      "required": true
+    },
+    {
+      "id": "device.zero",
+      "kind": "reference_guest",
+      "operation": "read 32 bytes from /dev/zero and require every byte to be zero",
+      "capture": [
+        "open_result",
+        "read_result",
+        "zero_content",
+        "errno"
+      ],
+      "required": true
+    },
+    {
+      "id": "device.full",
+      "kind": "reference_guest",
+      "operation": "write one byte to /dev/full",
+      "expected_class": "ENOSPC",
+      "required": true
+    },
+    {
+      "id": "device.console",
+      "kind": "reference_guest",
+      "operation": "open /dev/console O_WRONLY|O_NOCTTY without writing",
+      "capture": [
+        "open_result",
+        "errno"
+      ],
+      "required": true
+    },
+    {
+      "id": "tty.tcgets",
+      "command": [
+        "/usr/bin/busybox",
+        "stty",
+        "-a"
+      ],
+      "capture": [
+        "exit_status",
+        "stdout",
+        "stderr",
+        "ioctls",
+        "termios_bytes"
+      ],
+      "required": true
+    },
+    {
+      "id": "tty.winsize",
+      "kind": "small_fixture",
+      "operation": "TIOCGWINSZ on controlling terminal",
+      "capture": [
+        "return_value",
+        "errno",
+        "winsize_bytes"
+      ],
+      "required": true
+    },
+    {
+      "id": "tty.bad-pointer",
+      "kind": "small_fixture",
+      "operation": "TCGETS with invalid userspace output pointer",
+      "expected_class": "EFAULT",
+      "required": true
+    },
+    {
+      "id": "tty.unknown-ioctl",
+      "kind": "small_fixture",
+      "operation": "unsupported terminal ioctl",
+      "capture": [
+        "return_value",
+        "errno"
+      ],
+      "required": true
+    },
+    {
+      "id": "pty.open-pair",
+      "kind": "small_fixture",
+      "operation": "allocate PTY master/slave, exchange bytes both directions, close both ends",
+      "capture": [
+        "master_identity",
+        "slave_identity",
+        "read_write_results",
+        "close_results"
+      ],
+      "required": true
+    },
+    {
+      "id": "pty.child-shell",
+      "kind": "reference_guest",
+      "operation": "launch /bin/sh on PTY slave and exchange one command/output cycle",
+      "capture": [
+        "session_id",
+        "process_group",
+        "foreground_process_group",
+        "exit_status",
+        "transcript"
+      ],
+      "required": true
+    },
+    {
+      "id": "pty.stale-generation",
+      "kind": "small_fixture",
+      "operation": "close PTY pair, allocate replacement, verify stale handle cannot target replacement",
+      "expected_class": "generation-safe failure",
+      "required": true
+    }
+  ],
+  "runtime_owner_rules": [
+    "TTY line discipline/state is architecture-neutral",
+    "PL011 is only a serial adapter and must not own job-control policy",
+    "FD/OFD identity remains in kernel/linux-fd",
+    "foreground process-group/session semantics compose Step-30 owners",
+    "device node existence never grants ambient device authority"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "schema": "kernal-step-scientific-endpoint-v1",
+  "step": 36,
+  "state": "DESIGN_CONTRACT",
+  "research_question": "Can Kernal provide the bounded cgroup, namespace, rlimit and systemd-facing security contracts required by the pinned Debian 13 ARM64 target without fake-success isolation?",
+  "claim_bindings": ["compat.debian13-arm64", "authority.capability-isolation", "performance.kernel-runtime"],
+  "metrics": [
+    {"name":"systemd_feature_probe_passed","type":"integer","unit":"cases"},
+    {"name":"systemd_feature_probe_total","type":"integer","unit":"cases"},
+    {"name":"enforced_resource_limit_cases","type":"integer","unit":"cases"},
+    {"name":"resource_limit_total","type":"integer","unit":"cases"},
+    {"name":"cgroup_limit_escape_successes","type":"integer","unit":"cases"},
+    {"name":"namespace_escape_successes","type":"integer","unit":"cases"},
+    {"name":"unsupported_security_fake_success_count","type":"integer","unit":"cases"},
+    {"name":"isolation_negative_tests_passed","type":"integer","unit":"cases"},
+    {"name":"isolation_negative_tests_total","type":"integer","unit":"cases"},
+    {"name":"cgroup_operation_p50_us","type":"number","unit":"microseconds"},
+    {"name":"cgroup_operation_p95_us","type":"number","unit":"microseconds"},
+    {"name":"cgroup_operation_p99_us","type":"number","unit":"microseconds"},
+    {"name":"resource_accounting_error_percent","type":"number","unit":"percent"}
+  ],
+  "negative_controls": [
+    "cgroup resource limits must not be bypassable by a member task",
+    "namespace boundaries must reject undelegated cross-namespace authority",
+    "unsupported security-sensitive operations must never return fake success",
+    "resource accounting must be compared with a pinned reference workload rather than inferred from counters alone"
+  ],
+  "hard_zero_metrics": ["cgroup_limit_escape_successes", "namespace_escape_successes", "unsupported_security_fake_success_count"],
+  "environment_fields": ["tested_commit", "architecture", "debian_target_id", "qemu_version", "qemu_profile_id", "toolchain", "fixture_hashes", "cpu_count", "memory_bytes"],
+  "baseline": {"kind":"pinned-debian13-arm64-linux", "required_for":["systemd_feature_probe_passed", "systemd_feature_probe_total", "cgroup_operation_p50_us", "cgroup_operation_p95_us", "cgroup_operation_p99_us", "resource_accounting_error_percent"]},
+  "repetition_policy": {"minimum_runs":30, "timing_metrics":"report distribution and variance for operations and accounting workloads"},
+  "promotion_rule": {"to_measured":"exact-SHA executed evidence must cover the declared cgroup/namespace/rlimit/security profile and all hard-zero negatives", "to_replicated":"independent reproduction of the pinned profile is required"},
+  "raw_evidence_contract": {"format":"json", "path_template":"research/runtime/step36/<tested_commit>.json", "required_fields":["tested_commit", "environment", "metrics", "negative_controls", "raw_artifact_hash"]}
+}

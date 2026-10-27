@@ -1,0 +1,17 @@
+[package]
+name = "kernal-runtime-page-table-x86-64"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+kernal-bootstrap-memory = { path = "../bootstrap-memory" }
+kernal-frame-allocator = { path = "../frame-allocator" }
+kernal-kmap = { path = "../kmap" }
+kernal-kmap-x86-64 = { path = "../kmap-x86_64" }
+kernal-page-table = { path = "../page-table" }
+kernal-paging = { path = "../paging" }

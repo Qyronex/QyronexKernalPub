@@ -1,0 +1,13 @@
+[package]
+name = "kernal-scheduler-smp"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+[lib]
+path = "src/lib.rs"
+
+[dependencies]
+kernal-percpu = { path = "../percpu" }
+kernal-scheduler = { path = "../scheduler" }

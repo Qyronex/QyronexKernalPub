@@ -1,0 +1,32 @@
+{
+  "schema": "kernal-step-scientific-endpoint-v1",
+  "step": 37,
+  "state": "DESIGN_CONTRACT",
+  "research_question": "Can unchanged Debian 13 ARM64 systemd run as PID 1 and manage ordinary services on Kernal with reproducible Linux-compatible lifecycle semantics?",
+  "claim_bindings": ["compat.debian13-arm64", "performance.kernel-runtime"],
+  "metrics": [
+    {"name":"boot_to_pid1_ms","type":"number","unit":"milliseconds"},
+    {"name":"boot_to_multi_user_ms","type":"number","unit":"milliseconds"},
+    {"name":"mandatory_unit_successes","type":"integer","unit":"units"},
+    {"name":"mandatory_unit_total","type":"integer","unit":"units"},
+    {"name":"service_lifecycle_passed","type":"integer","unit":"cases"},
+    {"name":"service_lifecycle_total","type":"integer","unit":"cases"},
+    {"name":"boot_blocker_count","type":"integer","unit":"blockers"},
+    {"name":"kernel_panic_count","type":"integer","unit":"events"},
+    {"name":"shutdown_success_rate","type":"number","unit":"percent"},
+    {"name":"reboot_success_rate","type":"number","unit":"percent"},
+    {"name":"diagnostic_missing_count","type":"integer","unit":"cases"},
+    {"name":"resident_memory_at_multi_user_bytes","type":"integer","unit":"bytes"}
+  ],
+  "negative_controls": [
+    "mandatory unsupported functionality must fail explicitly rather than fake success",
+    "no process-name or systemd-specific kernel special case is allowed",
+    "failed services must retain a diagnosable failure path"
+  ],
+  "hard_zero_metrics": ["kernel_panic_count", "diagnostic_missing_count"],
+  "environment_fields": ["tested_commit", "architecture", "debian_target_id", "rootfs_hashes", "systemd_version", "qemu_version", "qemu_profile_id", "toolchain", "fixture_hashes"],
+  "baseline": {"kind":"pinned-debian13-arm64-linux", "required_for":["boot_to_pid1_ms", "boot_to_multi_user_ms", "mandatory_unit_successes", "mandatory_unit_total", "resident_memory_at_multi_user_bytes"]},
+  "repetition_policy": {"minimum_runs":10, "timing_metrics":"report distribution/variance and first-failure classification for every failed boot"},
+  "promotion_rule": {"to_measured":"unchanged systemd PID1 evidence must be tied to one exact tested commit and pinned rootfs/profile; no fake-success/process-name exceptions", "to_replicated":"independent reproduction of the same pinned boot/service profile is required"},
+  "raw_evidence_contract": {"format":"json", "path_template":"research/runtime/step37/<tested_commit>.json", "required_fields":["tested_commit", "environment", "metrics", "boot_markers", "first_failure", "raw_artifact_hash"]}
+}

@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "step": 33,
+  "profile": "qemu-virt-virtio-mmio-block-v1",
+  "status": "PREP_ONLY_RUNTIME_PROOF_REQUIRED",
+  "qemu_intent": {
+    "machine": "virt,gic-version=3",
+    "cpu": "max",
+    "device": "virtio-blk-device",
+    "drive": "ephemeral qcow2 overlay over verified pinned Debian base"
+  },
+  "fdt_discovery_contract": {
+    "compatible": "virtio,mmio",
+    "required_properties": ["compatible", "reg", "interrupts"],
+    "fixed_mmio_address_required": false,
+    "fixed_irq_number_required": false,
+    "reason": "Runtime discovery must consume the QEMU-provided FDT and must not hard-code QEMU platform-bus addresses into common policy."
+  },
+  "positive_vectors": [
+    "one discovered VirtIO MMIO node with bounded nonzero reg range",
+    "supported device id resolves to block transport",
+    "feature negotiation selects only implemented features",
+    "bounded queue setup and one sector read",
+    "bounded queue setup and one sector write to disposable overlay",
+    "read-after-write on disposable overlay"
+  ],
+  "negative_vectors": [
+    "missing compatible property",
+    "truncated reg property",
+    "zero-length or overflowing MMIO range",
+    "overlapping MMIO range",
+    "missing/truncated interrupt specifier",
+    "unsupported VirtIO device id",
+    "queue size zero",
+    "queue size above negotiated maximum",
+    "descriptor index outside queue",
+    "descriptor chain cycle",
+    "descriptor length overflow",
+    "guest buffer outside explicitly mediated range",
+    "device reset/teardown followed by stale descriptor completion"
+  ],
+  "security_invariants": [
+    "no descriptor can address arbitrary kernel memory",
+    "malformed queue metadata fails closed",
+    "device teardown revokes queue/IRQ/shared-buffer authority before reuse",
+    "block transport does not own filesystem policy",
+    "pinned Debian base image is never written directly"
+  ],
+  "fallback": {
+    "transport": "virtio-pci",
+    "trigger": "VirtIO-MMIO cannot meet correctness/security acceptance with the smaller QEMU-only path",
+    "rule": "Fallback must explicitly release the required PCIe/IRQ/DMA lanes; no silent widening."
+  }
+}
